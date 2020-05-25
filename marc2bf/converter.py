@@ -100,21 +100,8 @@ class M2BFConverter:
                     for f in r[field]:
                         if "data" in params:
                             params["data"] = self._handle_data(f, params["data"])
-
-                        elif "props" in params:
-                            subresource = {}
-                            for k in params["props"]:
-                                # k is the subresource property
-                                # kfn sub resource property function, will create a literal or object
-                                kfn = params["props"][k][0]
-                                # This is the variables/parameters, one of which will be data
-                                kparams = params["props"][k][1]
-                                if "data" in kparams:
-                                    kparams["data"] = self._handle_data(f, kparams["data"])
-                                subresourcedata = kfn(**kparams)
-                                subresource[k] = subresourcedata
-                            params["props"] = subresource
-                            
+                        if "props" in params:
+                            params["props"] = self._handle_props(f, params["props"])
                         objectdata = fn(**params)
                         resource[prop] = objectdata
                 self._graph.append(resource)
@@ -192,4 +179,73 @@ class M2BFConverter:
                 if not isinstance(fielddata, list):
                     fielddata = [fielddata]
         return fielddata
+        
+    def _handle_props(
+        self,
+        field,
+        props
+    ) -> object:
+        subresource = {}
+        for k in props:
+            # k is the subresource property
+            # kfn sub resource property function, will create a literal or object
+            kfn = props[k][0]
+            # This is the variables/parameters, one of which will be data
+            kparams = props[k][1]
+            if "data" in kparams:
+                kparams["data"] = self._handle_data(field, kparams["data"])
+            if "props" in kparams:
+                kparams["props"] = self._handle_props(field, kparams["props"])
+            if "uri" in kparams:
+                kparams["uri"] = self._handle_uri(field, kparams["uri"])
+
+            subresourcedata = kfn(**kparams)
+            subresource[k] = subresourcedata
+        return subresource
+
+    def _handle_uri(
+        self,
+        field,
+        uridata
+    ) -> list:
+        if not isinstance(uridata, list):
+            uridata = [uridata]
+        
+        urid = uridata[0]
+        uridatafn = urid[0]
+        uridatavals = urid[1]
+        datafields = []
+        for v in uridatavals:
+            if ':' in v:
+                datafields.append(eval('field' + v))
+            elif v == "ind1" or v == "ind2":
+               datafields.append(field[v])
+            elif "subfields" in field:
+                for sf in field["subfields"]:
+                    key = list(sf.keys())[0]
+                    if v == key:
+                        datafields.append(sf[key])
+            elif '=' in v:
+                datafields.append(v.split("=")[1])
+            elif v.startswith('%') and v.endswith("%"):
+                if v in self._urirefs:
+                    datafields.append(self._urirefs[v])
+        if uridatafn != None:
+            fielddata = uridatafn(datafields)
+            if not isinstance(fielddata, list):
+                fielddata = [fielddata]
+        else:
+            fielddata = datafields
+        if len(uridata) > 1:
+            for additionaldata in uridata[1:]:
+                additionaldatafn = additionaldata[0]
+                additionaldataparams = additionaldata[1]
+                fielddata = additionaldatafn(fielddata, additionaldataparams)
+                if not isinstance(fielddata, list):
+                    fielddata = [fielddata]
+        if len(fielddata) > 0:
+            return fielddata[0]
+        else:
+            return ''
+                            
         

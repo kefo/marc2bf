@@ -55,7 +55,17 @@ class Filters:
         separator: str = " "
     ) -> str:
         return separator.join(data)
-        
+
+
+    def last(
+        self,
+        data: list = []
+    ) -> str:
+        if len(data) == 1:
+            return data
+        else:
+            return data[:-1]
+            
     def prepend(
         self,
         data: list = [],
@@ -66,11 +76,33 @@ class Filters:
         newdata = [ prependstr + d for d in data ]
         return newdata
 
-    def last(
+
+    def roles(
         self,
         data: list = []
     ) -> str:
-        if len(data) == 1:
-            return data
+        returndata = []
+        if len(data) == 0:
+            returndata.append("http://id.loc.gov/vocabulary/relators/ctb")
         else:
-            return data[:-1]
+            for d in data:
+                if strlen(d) == '3':
+                    returndata.append("http://id.loc.gov/vocabulary/relators/" + d.lower())
+                elif d == '':
+                    returndata.append("http://id.loc.gov/vocabulary/relators/" + d.lower())
+                else:
+                    returndata.append(self.bnode())
+        return returndata
+
+
+    def uri_or_bnode(
+        self,
+        data: list = []
+    ) -> str:
+        if len(data) == 0:
+            return self.bnode()
+        else:
+            return data[0]
+
+
+    

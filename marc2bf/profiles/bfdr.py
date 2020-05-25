@@ -84,6 +84,11 @@ profile = [
                 )
             },
             {
+                "field": "490",
+                "property": "bf:seriesStatement",
+                "pattern": (patterns.literal, { "data": (None, ['a']) })
+            },
+            {
                 "field": "001", # Using 001 here is a bit of a hack.  We need to pick a field in the MARC record.  All will have this one.  Could have chosen leader.
                 "property": "bf:adminMetadata",
                 "pattern": (patterns.uri, { "data": [(None, ['%AM1%', '%AM2%'])] })
@@ -99,6 +104,40 @@ profile = [
                 "subfields": ["a"],
                 "property": "bf:identifiedBy",
                 "pattern": (patterns.object_simple, { "objtypes": ["bf:Lccn"], "valuesprop": "rdf:value", "data": (None, ['a']) })
+            },
+            {
+                "field": "100",
+                "property": "bf:contribution",
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Contribution", "bflc:PrimaryContribution"],
+                        "props": {
+                            "bf:agent": (
+                                patterns.object_complex, 
+                                { 
+                                    "objtypes": ["bf:Agent"],
+                                    "uri": (filters.uri_or_bnode, {"data": (None, ['1'])}),
+                                    "props": {
+                                        "rdfs:label": (patterns.literal, { "data": (filters.join, ['a', 'b', 'c', 'd']) }),
+                                        "bf:isIdentifiedByAuthority": (patterns.uri, { "data": [(None, ['0'])] }),
+                                    }
+                                }
+                            ),
+                            #"bf:role": (
+                            #    patterns.object_complex, 
+                            #    { 
+                            #        "objtypes": ["bf:Role"],
+                            #        "uri": (filters.roles, { "data": (None, ['e','4'])}),
+                            #        "props": {
+                            #            "rdfs:label": (patterns.literal, { "data": (None, ['e']) })
+                            #        }
+                            #    }
+                            #),
+                            "bf:role": (patterns.uri, { "data": (filters.roles, ['e','4'])}),
+                        }
+                    }
+                )
             },
             {
                 "field": "001",

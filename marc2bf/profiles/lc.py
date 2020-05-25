@@ -53,10 +53,30 @@ profile = [
                 "pattern": (patterns.literal, { "data": (filters.join, ['a', 'b', 'c']) })
             },
             {
+                "field": "260",
+                "property": "bf:provisionActivity",
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:ProvisionActivity"],
+                        "props": {
+                            "bf:place": (patterns.object_simple, { "objtypes": ["bf:Place"], "valuesprop": "rdfs:label", "data": (None, ['a']) }),
+                            "bf:agent": (patterns.object_simple, { "objtypes": ["bf:Agent"], "valuesprop": "rdfs:label", "data": (None, ['b']) }),
+                            "bf:date": (patterns.literal, { "data": (None, ['c']) })
+                        }
+                    }
+                )
+            },
+            {
                 "field": "300",
                 "property": "bf:dimensions",
                 "pattern": (patterns.literal, { "data": (None, ['a']) })
-            }
+            },
+            {
+                "field": "490",
+                "property": "bf:seriesStatement",
+                "pattern": (patterns.literal, { "data": (None, ['a']) })
+            },
         ]
     },
     {
