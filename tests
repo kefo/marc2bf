@@ -1,0 +1,15 @@
+#!/usr/bin/env python
+
+from marc2bf.converter import M2BFConverter
+
+c = M2BFConverter()
+c.load(mrcfile="test/marcxml/t1.xml", filetype="xml")
+c.convert()
+print(c.serialize('n3').decode("utf-8"))
+
+print()
+print()
+
+c.set_profile("lc")
+c.convert()
+print(c.serialize('n3').decode("utf-8"))
