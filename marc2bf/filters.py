@@ -171,8 +171,6 @@ class Filters:
             for d in data:
                 if strlen(d) == '3':
                     returndata.append("http://id.loc.gov/vocabulary/relators/" + d.lower())
-                elif d == '':
-                    returndata.append("http://id.loc.gov/vocabulary/relators/" + d.lower())
                 else:
                     returndata.append(self.bnode())
         return returndata
