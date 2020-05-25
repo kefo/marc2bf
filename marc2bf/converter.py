@@ -99,40 +99,22 @@ class M2BFConverter:
                     params = i["pattern"][1]
                     for f in r[field]:
                         if "data" in params:
-                            if not isinstance(params["data"], list):
-                                params["data"] = [params["data"]]
-                            primarydata = params["data"][0]
-                            datafn = primarydata[0]
-                            datafields = []
-                            for df in primarydata[1]:
-                                if ':' in df:
-                                    datafields.append(eval('f' + df))
-                                elif df == "ind1" or df == "ind2":
-                                   datafields.append(f[df])
-                                elif "subfields" in f:
-                                    for sf in f["subfields"]:
-                                        key = list(sf.keys())[0]
-                                        if df == key:
-                                            datafields.append(sf[key])
-                                elif '=' in df:
-                                    datafields.append(df.split("=")[1])
-                                elif df.startswith('%') and df.endswith("%"):
-                                    if df in self._urirefs:
-                                        datafields.append(self._urirefs[df])
-                            if datafn != None:
-                                fielddata = datafn(datafields)
-                                if not isinstance(fielddata, list):
-                                    fielddata = [fielddata]
-                            else:
-                                fielddata = datafields
-                            if len(params["data"]) > 1:
-                                for additionaldata in params["data"][1:]:
-                                    additionaldatafn = additionaldata[0]
-                                    additionaldataparams = additionaldata[1]
-                                    fielddata = additionaldatafn(fielddata, additionaldataparams)
-                                    if not isinstance(fielddata, list):
-                                        fielddata = [fielddata]
-                            params["data"] = fielddata
+                            params["data"] = self._handle_data(f, params["data"])
+
+                        elif "props" in params:
+                            subresource = {}
+                            for k in params["props"]:
+                                # k is the subresource property
+                                # kfn sub resource property function, will create a literal or object
+                                kfn = params["props"][k][0]
+                                # This is the variables/parameters, one of which will be data
+                                kparams = params["props"][k][1]
+                                if "data" in kparams:
+                                    kparams["data"] = self._handle_data(f, kparams["data"])
+                                subresourcedata = kfn(**kparams)
+                                subresource[k] = subresourcedata
+                            params["props"] = subresource
+                            
                         objectdata = fn(**params)
                         resource[prop] = objectdata
                 self._graph.append(resource)
@@ -169,3 +151,45 @@ class M2BFConverter:
             # Assume profile object
             self._profile = use_profile
         return None
+    
+    
+    def _handle_data(
+        self,
+        field,
+        data
+    ) -> list:
+        if not isinstance(data, list):
+            data = [data]
+        primarydata = data[0]
+        datafn = primarydata[0]
+        datafields = []
+        for df in primarydata[1]:
+            if ':' in df:
+                datafields.append(eval('field' + df))
+            elif df == "ind1" or df == "ind2":
+               datafields.append(field[df])
+            elif "subfields" in field:
+                for sf in field["subfields"]:
+                    key = list(sf.keys())[0]
+                    if df == key:
+                        datafields.append(sf[key])
+            elif '=' in df:
+                datafields.append(df.split("=")[1])
+            elif df.startswith('%') and df.endswith("%"):
+                if df in self._urirefs:
+                    datafields.append(self._urirefs[df])
+        if datafn != None:
+            fielddata = datafn(datafields)
+            if not isinstance(fielddata, list):
+                fielddata = [fielddata]
+        else:
+            fielddata = datafields
+        if len(data) > 1:
+            for additionaldata in data[1:]:
+                additionaldatafn = additionaldata[0]
+                additionaldataparams = additionaldata[1]
+                fielddata = additionaldatafn(fielddata, additionaldataparams)
+                if not isinstance(fielddata, list):
+                    fielddata = [fielddata]
+        return fielddata
+        

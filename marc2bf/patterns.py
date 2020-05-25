@@ -46,6 +46,33 @@ class Patterns:
         obj[valuesprop] = data
         return obj
         
+    def object_complex(self,
+        uri: str = "",
+        objtypes: list = [],
+        props: object = {}
+    ) -> object:
+        '''
+        {
+      "@id": "http://id.loc.gov/authorities/subjects/sh99001237",
+      "@type": [
+        "madsrdf:GenreForm",
+        "madsrdf:Authority"
+      ],
+      "madsrdf:authoritativeLabel": {
+        "@language": "en",
+        "@value": "Biography"
+      },
+        '''
+        obj = {}
+        if uri != "":
+            obj["@id"] = uri
+        if len(objtypes) == 1:
+            objtypes = objtypes[0]
+        obj["@type"] = objtypes
+        for k in props:
+            obj[k] = props[k]
+        return obj
+        
     def uri(
         self,
         data: list = []
@@ -63,6 +90,7 @@ class Patterns:
         return returndata
         
         
+    # NOTHING USED BELOW HERE?????
     def property_uri(
         self,
         prop: str = '',

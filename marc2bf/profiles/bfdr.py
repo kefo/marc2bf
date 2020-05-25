@@ -69,6 +69,21 @@ profile = [
                 "pattern": (patterns.literal, { "data": (None, ['a']) })
             },
             {
+                "field": "260",
+                "property": "bf:provisionActivity",
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:ProvisionActivity"],
+                        "props": {
+                            "bf:place": (patterns.object_simple, { "objtypes": ["bf:Place"], "valuesprop": "rdfs:label", "data": (None, ['a']) }),
+                            "bf:agent": (patterns.object_simple, { "objtypes": ["bf:Agent"], "valuesprop": "rdfs:label", "data": (None, ['b']) }),
+                            "bf:date": (patterns.literal, { "data": (None, ['c']) })
+                        }
+                    }
+                )
+            },
+            {
                 "field": "001", # Using 001 here is a bit of a hack.  We need to pick a field in the MARC record.  All will have this one.  Could have chosen leader.
                 "property": "bf:adminMetadata",
                 "pattern": (patterns.uri, { "data": [(None, ['%AM1%', '%AM2%'])] })
