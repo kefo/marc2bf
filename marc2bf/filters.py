@@ -65,7 +65,72 @@ class Filters:
         day = data[4:6]
         date = year + "-" + month + "-" + day
         return date
-        
+
+    def illustrativeContentMap(
+        self,
+        data: str = ""
+    ) -> str:
+        if isinstance(data, list):
+            if len(data) == 0:
+                return ""
+            else:
+                data = data[0]
+        datamap = {
+            "a": "ill",
+            "b": "map",
+            "c": "por",
+            "d": "chr",
+            "e": "pln",
+            "f": "plt",
+            "g": "mus",
+            "h": "fac",
+            "i": "coa",
+            "j": "gnt",
+            "k": "for",
+            "l": "sam",
+            "m": "pho",
+            "o": "pht",
+            "p": "ilm",
+        }
+        if data in datamap:
+            return datamap[data]
+        else:
+            return ""
+            
+    def intendedAudienceMap(
+        self,
+        data: str = ""
+    ) -> str:
+        if isinstance(data, list):
+            if len(data) == 0:
+                return ""
+            else:
+                data = data[0]
+        datamap = {
+            "a": "pre",
+            "b": "pri",
+            "c": "pad",
+            "d": "ado",
+            "e": "adu",
+            "f": "spe",
+            "g": "gen",
+            "j": "juv",
+        }
+        if data in datamap:
+            return datamap[data]
+        else:
+            return ""
+
+    def iscoded(
+        self,
+        data: list = []
+    ) -> str:
+        newdata = []
+        for d in data:
+            d = d.lower().strip()
+            if d != "|" and d != "x" and d != "||" and d != "xx" and d != "|||" and d != "xxx" and d!= "":
+                newdata.append(d)
+        return newdata
 
     def join(
         self,

@@ -58,19 +58,16 @@ profile = [
         "properties": [
             {
                 "field": "010",
-                "subfields": ["a"],
                 "property": "bf:identifiedBy",
                 "pattern": (patterns.object_simple, { "objtypes": ["bf:Lccn"], "valuesprop": "rdf:value", "data": (None, ['a']) })
             },
             {
                 "field": "260",
-                "subfields": ["c"],
                 "property": "bf:provisionActivityStatement",
                 "pattern": (patterns.literal, { "data": (filters.join, ['a', 'b', 'c']) })
             },
             {
                 "field": "300",
-                "subfields": ["c"],
                 "property": "bf:dimensions",
                 "pattern": (patterns.literal, { "data": (None, ['a']) })
             },
@@ -112,6 +109,7 @@ profile = [
             },
             {
                 "field": ["100", "110", "111"],
+                "conditions": (conditions.no_dollar_t, ''),
                 "property": "bf:contribution",
                 "pattern": (
                     patterns.object_complex, 
@@ -149,14 +147,12 @@ profile = [
             },
             {
                 "field": ["700", "710", "711"],
-                "conditions": conditions.no_dollar_t,
+                "conditions": (conditions.no_dollar_t, ''),
                 "property": "bf:contribution",
                 "pattern": (
                     patterns.object_complex, 
                     { 
                         "objtypes": ["bf:Contribution",],
-                        "uri": (filters.bnode, {}),
-                        "uriref": "%CTB01%",
                         "props": {
                             "bf:agent": (
                                 patterns.object_complex, 
@@ -189,6 +185,23 @@ profile = [
                 "field": "100",
                 "property": "bfdr:primaryContribution",
                 "pattern": (patterns.uri, { "data": [(None, ["%CTB01%"])] })
+            },
+            {
+                "field": "008",
+                "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
+                "property": "bf:illustrativeContent",
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[18:19]', '[19:20]', '[20:21]', '[21:22]']), (filters.illustrativeContentMap, ), (filters.appenduri, 'http://id.loc.gov/vocabulary/millus/')] })
+            },
+            {
+                "field": "008",
+                "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
+                "property": "bf:intendedAudience",
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[22:23]']), (filters.intendedAudienceMap, ), (filters.appenduri, 'http://id.loc.gov/vocabulary/maudience/')] })
+            },
+            {
+                "field": "008",
+                "property": "bf:language",
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[35:38]']), (filters.appenduri, 'http://id.loc.gov/vocabulary/languages/')] })
             },
             {
                 "field": "001",

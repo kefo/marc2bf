@@ -121,11 +121,22 @@ class M2BFConverter:
                             params = deepcopy(i["pattern"][1])
                             for f in r[field]:
                                 if 'conditions' in i:
+                                    if not isinstance(i["conditions"], list):
+                                        i["conditions"] = [i["conditions"]]
                                     # Conditions at the profile level must look at entire marc record
-                                    conditionfn = i["conditions"]
-                                    to_continue = conditionfn(f)
-                                    if not to_continue:
-                                        pass
+                                    continue_on = True
+                                    for condition in i["conditions"]:
+                                        conditionfn = condition[0]
+                                        if len(condition) == 2:
+                                            conditiondata = condition[1]
+                                            to_continue = conditionfn(r, f, conditiondata)
+                                        else:
+                                            to_continue = conditionfn(r, f)
+                                        to_continue = conditionfn(r, f, conditiondata)
+                                        if not to_continue:
+                                            continue_on = False
+                                    if not continue_on:
+                                        break;
                                 if "data" in params:
                                     params["data"] = self._handle_data(f, params["data"])
                                 if "props" in params:
@@ -209,8 +220,11 @@ class M2BFConverter:
         if len(data) > 1:
             for additionaldata in data[1:]:
                 additionaldatafn = additionaldata[0]
-                additionaldataparams = additionaldata[1]
-                fielddata = additionaldatafn(fielddata, additionaldataparams)
+                if len(additionaldata) == 2:
+                    additionaldataparams = additionaldata[1]
+                    fielddata = additionaldatafn(fielddata, additionaldataparams)
+                else:
+                    fielddata = additionaldatafn(fielddata)
                 if not isinstance(fielddata, list):
                     fielddata = [fielddata]
         return fielddata
