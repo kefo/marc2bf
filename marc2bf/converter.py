@@ -63,18 +63,36 @@ class M2BFConverter:
         self._g = Graph()
         for robj in self.records:
             rdict = robj.as_dict()
-            # print(rdict)
             r = {}
             r["leader"] = [rdict["leader"]]
+            
+            r["leader"] = []
+            leader = {
+                "tag": "leader",
+                "content": rdict["leader"]
+            }
+            r["leader"].append(leader)
+            
             for f in rdict["fields"]:
                 for k in f:
-                    field = f[k]
+                    if int(k) < 10:
+                        field = {}
+                        field["content"] = f[k]
+                    else:
+                        field = f[k]
+                    field["tag"] = k
                     if k in r:
                         r[k].append(field)
                     else:
                         r[k] = [field]
             # print(r)
             for profile in self._profile:
+                if 'conditions' in profile:
+                    # Conditions at the profile level must look at entire marc record
+                    conditionfn = profile["conditions"]
+                    to_continue = conditionfn(r)
+                    if not to_continue:
+                        pass
                 uri = ""
                 resource = {"@type": profile["resourcetype"]}
                 if 'seturi' in profile:
@@ -93,17 +111,34 @@ class M2BFConverter:
                     self._urirefs[profile["uriref"]] = uri
                     
                 for i in profile["properties"]:
-                    field = i["field"]
-                    prop = i["property"]
-                    fn = i["pattern"][0]
-                    params = i["pattern"][1]
-                    for f in r[field]:
-                        if "data" in params:
-                            params["data"] = self._handle_data(f, params["data"])
-                        if "props" in params:
-                            params["props"] = self._handle_props(f, params["props"])
-                        objectdata = fn(**params)
-                        resource[prop] = objectdata
+                    if not isinstance(i["field"], list):
+                        i["field"] = [i["field"]]
+                    for ifield in i["field"]:
+                        field = ifield
+                        if field in r:
+                            prop = i["property"]
+                            fn = i["pattern"][0]
+                            params = deepcopy(i["pattern"][1])
+                            for f in r[field]:
+                                if 'conditions' in i:
+                                    # Conditions at the profile level must look at entire marc record
+                                    conditionfn = i["conditions"]
+                                    to_continue = conditionfn(f)
+                                    if not to_continue:
+                                        pass
+                                if "data" in params:
+                                    params["data"] = self._handle_data(f, params["data"])
+                                if "props" in params:
+                                    params["props"] = self._handle_props(f, params["props"])
+                                if "uri" in params:
+                                    params["uri"] = self._handle_uri(f, params["uri"])
+                                    if 'uriref' in params and params["uri"][0] != "":
+                                        self._urirefs[params["uriref"]] = params["uri"]
+                                        del params["uriref"]
+                                objectdata = fn(**params)
+                                if prop not in resource:
+                                    resource[prop] = []
+                                resource[prop].append(objectdata)
                 self._graph.append(resource)
                 print(resource)
                 
@@ -152,19 +187,19 @@ class M2BFConverter:
         datafields = []
         for df in primarydata[1]:
             if ':' in df:
-                datafields.append(eval('field' + df))
-            elif df == "ind1" or df == "ind2":
+                datafields.append(eval('field["content"]' + df))
+            elif df == "ind1" or df == "ind2" or df == "tag":
                datafields.append(field[df])
-            elif "subfields" in field:
-                for sf in field["subfields"]:
-                    key = list(sf.keys())[0]
-                    if df == key:
-                        datafields.append(sf[key])
             elif '=' in df:
                 datafields.append(df.split("=")[1])
             elif df.startswith('%') and df.endswith("%"):
                 if df in self._urirefs:
                     datafields.append(self._urirefs[df])
+            elif "subfields" in field:
+                for sf in field["subfields"]:
+                    key = list(sf.keys())[0]
+                    if df == key:
+                        datafields.append(sf[key])
         if datafn != None:
             fielddata = datafn(datafields)
             if not isinstance(fielddata, list):

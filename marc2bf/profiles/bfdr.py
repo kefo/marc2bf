@@ -1,14 +1,16 @@
 from marc2bf.patterns import Patterns
 from marc2bf.filters import Filters
+from marc2bf.conditions import Conditions
 
 patterns = Patterns()
 filters = Filters()
+conditions = Conditions()
 profile = [
     {
         "resourcetype": "bf:AdminMetadata",
         "seturi": [(filters.bnode, )],
         'uriref': "%AM1%",
-        "condition": "always",
+        "condition": conditions.always,
         "properties": [
             {
                 "field": "008",
@@ -17,9 +19,8 @@ profile = [
             },
             {
                 "field": "040",
-                "subfields": ["a"],
                 "property": "bf:source",
-                "pattern": (patterns.object_simple, { "objtypes": ["bf:Source", "bf:Agent"], "valuesprop": "rdfs:label", "data": (None, ['a']) })
+                "pattern": (patterns.uri, { "data": [(None, ['a']), (filters.appenduri, 'http://id.loc.gov/vocabulary/organizations/')] })
             },
             {
                 "field": "leader",
@@ -32,7 +33,7 @@ profile = [
         "resourcetype": "bf:AdminMetadata",
         "seturi": [(filters.bnode, )],
         'uriref': "%AM2%",
-        "condition": "always",
+        "condition": conditions.always,
         "properties": [
             {
                 "field": "005",
@@ -44,11 +45,16 @@ profile = [
                 "property": "bf:source",
                 "pattern": (patterns.uri, { "data": [(filters.last, ['d']), (filters.appenduri, 'http://id.loc.gov/vocabulary/organizations/')] })
             },
+            {
+                "field": "leader",
+                "property": "bfdr:resourceStatus",
+                "pattern": (patterns.uri, { "data": [(None, ['[5:6]']), (filters.appenduri, 'http://id.loc.gov/vocabulary/resourceStatus/')] })
+            },
         ]
     },
     {
         "resourcetype": "bf:Instance",
-        "condition": "always",
+        "condition": conditions.always,
         "properties": [
             {
                 "field": "010",
@@ -97,21 +103,22 @@ profile = [
     },
     {
         "resourcetype": "bf:Work",
-        "condition": "always",
+        "condition": conditions.always,
         "properties": [
             {
                 "field": "010",
-                "subfields": ["a"],
                 "property": "bf:identifiedBy",
                 "pattern": (patterns.object_simple, { "objtypes": ["bf:Lccn"], "valuesprop": "rdf:value", "data": (None, ['a']) })
             },
             {
-                "field": "100",
+                "field": ["100", "110", "111"],
                 "property": "bf:contribution",
                 "pattern": (
                     patterns.object_complex, 
                     { 
-                        "objtypes": ["bf:Contribution", "bflc:PrimaryContribution"],
+                        "objtypes": ["bf:Contribution",],
+                        "uri": (filters.bnode, {}),
+                        "uriref": "%CTB01%",
                         "props": {
                             "bf:agent": (
                                 patterns.object_complex, 
@@ -119,7 +126,8 @@ profile = [
                                     "objtypes": ["bf:Agent"],
                                     "uri": (filters.uri_or_bnode, {"data": (None, ['1'])}),
                                     "props": {
-                                        "rdfs:label": (patterns.literal, { "data": (filters.join, ['a', 'b', 'c', 'd']) }),
+                                        "rdfs:label": (patterns.literal, { "data": (filters.join, ['a', 'q', 'b', 'c', 'd']) }),
+                                        "rdf:type": (patterns.uri, { "data": (filters.agentmap, ['tag']) }),
                                         "bf:isIdentifiedByAuthority": (patterns.uri, { "data": [(None, ['0'])] }),
                                     }
                                 }
@@ -138,6 +146,49 @@ profile = [
                         }
                     }
                 )
+            },
+            {
+                "field": ["700", "710", "711"],
+                "conditions": conditions.no_dollar_t,
+                "property": "bf:contribution",
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Contribution",],
+                        "uri": (filters.bnode, {}),
+                        "uriref": "%CTB01%",
+                        "props": {
+                            "bf:agent": (
+                                patterns.object_complex, 
+                                { 
+                                    "objtypes": ["bf:Agent"],
+                                    "uri": (filters.uri_or_bnode, {"data": (None, ['1'])}),
+                                    "props": {
+                                        "rdfs:label": (patterns.literal, { "data": (filters.join, ['a', 'q', 'b', 'c', 'd']) }),
+                                        "rdf:type": (patterns.uri, { "data": (filters.agentmap, ['tag']) }),
+                                        "bf:isIdentifiedByAuthority": (patterns.uri, { "data": [(None, ['0'])] }),
+                                    }
+                                }
+                            ),
+                            #"bf:role": (
+                            #    patterns.object_complex, 
+                            #    { 
+                            #        "objtypes": ["bf:Role"],
+                            #        "uri": (filters.roles, { "data": (None, ['e','4'])}),
+                            #        "props": {
+                            #            "rdfs:label": (patterns.literal, { "data": (None, ['e']) })
+                            #        }
+                            #    }
+                            #),
+                            "bf:role": (patterns.uri, { "data": (filters.roles, ['e','4'])}),
+                        }
+                    }
+                )
+            },
+            {
+                "field": "100",
+                "property": "bfdr:primaryContribution",
+                "pattern": (patterns.uri, { "data": [(None, ["%CTB01%"])] })
             },
             {
                 "field": "001",

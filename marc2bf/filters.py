@@ -2,6 +2,23 @@ from rdflib import BNode
 
 class Filters:
 
+    def agentmap(
+        self,
+        data: str = ""
+    ) -> str:
+        if isinstance(data, list):
+            if len(data) == 0:
+                return ""
+            else:
+                data = data[0]
+        if data.endswith('00'):
+            return "bf:Person"
+        elif data.endswith('10'):
+            return "bf:Organization"
+        elif data.endswith('11'):
+            return "bf:Meeting"
+        return ""
+    
     def appenduri(
         self,
         data: list = [],
@@ -13,7 +30,8 @@ class Filters:
         return self.prepend(newdata, uribase)
         
     def bnode(
-        self
+        self,
+        data: str = ""
     ) -> str:
         bnode = BNode()
         return bnode.n3()
