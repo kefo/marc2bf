@@ -36,6 +36,27 @@ class Filters:
         bnode = BNode()
         return bnode.n3()
         
+    def carrierMap(
+        self,
+        data: str = ""
+    ) -> str:
+        if isinstance(data, list):
+            if len(data) == 0:
+                return ""
+            else:
+                data = data[0]
+        datamap = {
+            "a": "http://id.loc.gov/vocabulary/mediaTypes/h",
+            "b": "http://id.loc.gov/vocabulary/carriers/he",
+            "c": "http://id.loc.gov/vocabulary/carriers/hg",
+            "o": "http://id.loc.gov/vocabulary/carriers/cr",
+            "q": "http://id.loc.gov/vocabulary/carriers/cz",
+            "r": "http://id.loc.gov/vocabulary/carriers/nc",
+            "s": "http://id.loc.gov/vocabulary/carriers/cz",
+        }
+        if data in datamap:
+            return datamap[data]
+        
     def f005date(
         self,
         data: list = []
@@ -65,6 +86,21 @@ class Filters:
         day = data[4:6]
         date = year + "-" + month + "-" + day
         return date
+        
+    def fontSizeMap(
+        self,
+        data: str = ""
+    ) -> str:
+        if isinstance(data, list):
+            if len(data) == 0:
+                return ""
+            else:
+                data = data[0]
+        datamap = {
+            "d": "http://id.loc.gov/vocabulary/mfont/lp",  # 008, Text
+        }
+        if data in datamap:
+            return datamap[data]
 
     def illustrativeContentMap(
         self,
@@ -94,8 +130,6 @@ class Filters:
         }
         if data in datamap:
             return datamap[data]
-        else:
-            return ""
             
     def intendedAudienceMap(
         self,
@@ -118,8 +152,6 @@ class Filters:
         }
         if data in datamap:
             return datamap[data]
-        else:
-            return ""
 
     def iscoded(
         self,
@@ -174,6 +206,21 @@ class Filters:
                 else:
                     returndata.append(self.bnode())
         return returndata
+        
+    def tactileMap(
+        self,
+        data: str = ""
+    ) -> str:
+        if isinstance(data, list):
+            if len(data) == 0:
+                return ""
+            else:
+                data = data[0]
+        datamap = {
+            "f": "http://id.loc.gov/vocabulary/mtactile/brail",  # 008, Text
+        }
+        if data in datamap:
+            return datamap[data]
 
 
     def uri_or_bnode(

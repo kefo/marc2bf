@@ -92,6 +92,24 @@ profile = [
                 "pattern": (patterns.literal, { "data": (None, ['a']) })
             },
             {
+                "field": "008",
+                "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
+                "property": "bf:carrier",
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[23:24]']), (filters.carrierMap, )] })
+            },
+            {
+                "field": "008",
+                "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
+                "property": "bf:fontSize",
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[23:24]']), (filters.fontSizeMap, )] })
+            },
+            {
+                "field": "008",
+                "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
+                "property": "bf:notation",
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[23:24]']), (filters.tactileMap, )] })
+            },
+            {
                 "field": "001", # Using 001 here is a bit of a hack.  We need to pick a field in the MARC record.  All will have this one.  Could have chosen leader.
                 "property": "bf:adminMetadata",
                 "pattern": (patterns.uri, { "data": [(None, ['%AM1%', '%AM2%'])] })
