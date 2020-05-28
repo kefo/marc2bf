@@ -235,6 +235,30 @@ profile = [
                 "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[27:28]']), (filters.f008Map, mappings["f008mappingsText"]["govPubMap"]), ] })
             },
             {
+                "field": "008",
+                "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
+                "property": "bf:genreForm",
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[29:30]']), (filters.f008Map, mappings["f008mappingsText"]["festschriftMap"]), ] })
+            },
+            {
+                "field": "008",
+                "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
+                "property": "bf:supplementaryContent",
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[30:31]']), (filters.f008Map, mappings["f008mappingsText"]["indexMap"]), ] })
+            },
+            {
+                "field": "008",
+                "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
+                "property": "bf:genreForm",
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[32:33]']), (filters.f008Map, mappings["f008mappingsText"]["literaryFormMap"]), ] })
+            },
+            {
+                "field": "008",
+                "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
+                "property": "bf:genreForm",
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[33:34]']), (filters.f008Map, mappings["f008mappingsText"]["biographyMap"]), ] })
+            },
+            {
                 "field": "001",
                 "property": "bf:adminMetadata",
                 "pattern": (patterns.uri, { "data": [(None, ['%AM1%', '%AM2%'])] })

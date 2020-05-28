@@ -86,7 +86,7 @@ class Patterns:
         '''
         returndata = []
         for d in data:
-            if d !=  "":
+            if d !=  "" and d != None:
                 returndata.append( {"@id": d} )
         return returndata
         

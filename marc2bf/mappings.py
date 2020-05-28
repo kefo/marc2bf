@@ -2,6 +2,13 @@
 mappings = {
     "f008mappingsText": {
         
+        "biographyMap": {
+            "a": "http://id.loc.gov/authorities/genreForms/gf2014026047",
+            "b": "http://id.loc.gov/authorities/genreForms/gf2014026049",
+            "c": "http://id.loc.gov/authorities/genreForms/gf2014026049",
+            "d": "http://id.loc.gov/authorities/genreForms/gf2014026049",
+        },
+
         "carrierMap": {
             "a": "http://id.loc.gov/vocabulary/mediaTypes/h",
             "b": "http://id.loc.gov/vocabulary/carriers/he",
@@ -12,6 +19,10 @@ mappings = {
             "s": "http://id.loc.gov/vocabulary/carriers/cz",
         },
         
+        "festschriftMap": {
+            "1": "http://id.loc.gov/authorities/genreForms/gf2016026082", 
+        },
+
         "fontSizeMap": {
             "d": "http://id.loc.gov/vocabulary/mfont/lp", 
         },
@@ -45,6 +56,10 @@ mappings = {
             "p": "http://id.loc.gov/vocabulary/millus/ilm",
         },
         
+        "indexMap": {
+            "1": "http://id.loc.gov/vocabulary/msupplcont/index", 
+        },
+        
         "intendedAudienceMap": {
             "a": "http://id.loc.gov/vocabulary/maudience/pre",
             "b": "http://id.loc.gov/vocabulary/maudience/pri",
@@ -54,6 +69,19 @@ mappings = {
             "f": "http://id.loc.gov/vocabulary/maudience/spe",
             "g": "http://id.loc.gov/vocabulary/maudience/gen",
             "j": "http://id.loc.gov/vocabulary/maudience/juv",
+        },
+        
+        "literaryFormMap": {
+            "1": "http://id.loc.gov/authorities/genreForms/gf2014026339",
+            "d": "http://id.loc.gov/authorities/genreForms/gf2014026297",
+            "e": "http://id.loc.gov/authorities/genreForms/gf2014026094",
+            "f": "http://id.loc.gov/authorities/genreForms/gf2015026020",
+            "h": "http://id.loc.gov/authorities/genreForms/gf2014026110",
+            "i": "http://id.loc.gov/authorities/genreForms/gf2014026141",
+            "j": "http://id.loc.gov/authorities/genreForms/gf2014026542",
+            "m": "http://id.loc.gov/authorities/genreForms/gf2014026339",
+            "p": "http://id.loc.gov/authorities/genreForms/gf2014026481",
+            "s": "http://id.loc.gov/authorities/genreForms/gf2011026363",
         },
         
         "supplementaryContentMap": {
