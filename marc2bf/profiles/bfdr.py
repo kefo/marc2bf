@@ -1,6 +1,7 @@
 from marc2bf.patterns import Patterns
 from marc2bf.filters import Filters
 from marc2bf.conditions import Conditions
+from marc2bf.mappings import mappings
 
 patterns = Patterns()
 filters = Filters()
@@ -95,19 +96,19 @@ profile = [
                 "field": "008",
                 "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
                 "property": "bf:carrier",
-                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[23:24]']), (filters.carrierMap, )] })
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[23:24]']), (filters.f008Map, mappings["f008mappingsText"]["carrierMap"]), ] })
             },
             {
                 "field": "008",
                 "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
                 "property": "bf:fontSize",
-                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[23:24]']), (filters.fontSizeMap, )] })
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[23:24]']), (filters.f008Map, mappings["f008mappingsText"]["fontSizeMap"]), ] })
             },
             {
                 "field": "008",
                 "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
                 "property": "bf:notation",
-                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[23:24]']), (filters.tactileMap, )] })
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[23:24]']), (filters.f008Map, mappings["f008mappingsText"]["tactileMap"]), ] })
             },
             {
                 "field": "001", # Using 001 here is a bit of a hack.  We need to pick a field in the MARC record.  All will have this one.  Could have chosen leader.
@@ -208,18 +209,30 @@ profile = [
                 "field": "008",
                 "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
                 "property": "bf:illustrativeContent",
-                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[18:19]', '[19:20]', '[20:21]', '[21:22]']), (filters.illustrativeContentMap, ), (filters.appenduri, 'http://id.loc.gov/vocabulary/millus/')] })
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[18:19]', '[19:20]', '[20:21]', '[21:22]']), (filters.f008Map, mappings["f008mappingsText"]["illustrativeContentMap"]), ] })
             },
             {
                 "field": "008",
                 "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
                 "property": "bf:intendedAudience",
-                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[22:23]']), (filters.intendedAudienceMap, ), (filters.appenduri, 'http://id.loc.gov/vocabulary/maudience/')] })
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[22:23]']), (filters.f008Map, mappings["f008mappingsText"]["intendedAudienceMap"]), ] })
             },
             {
                 "field": "008",
                 "property": "bf:language",
                 "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[35:38]']), (filters.appenduri, 'http://id.loc.gov/vocabulary/languages/')] })
+            },
+            {
+                "field": "008",
+                "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
+                "property": "bf:supplementaryContent",
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[23:24]', '[24:25]', '[25:26]', '[26:27]']), (filters.f008Map, mappings["f008mappingsText"]["supplementaryContentMap"]), ] })
+            },
+            {
+                "field": "008",
+                "conditions": [(conditions.leader_06_equals, ['a', 't']), (conditions.leader_07_equals, ['a', 'c', 'd', 'm'])],
+                "property": "bf:genreForm",
+                "pattern": (patterns.uri, { "data": [(filters.iscoded, ['[27:28]']), (filters.f008Map, mappings["f008mappingsText"]["govPubMap"]), ] })
             },
             {
                 "field": "001",
