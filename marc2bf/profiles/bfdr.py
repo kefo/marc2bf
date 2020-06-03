@@ -58,6 +58,20 @@ profile = [
         "condition": conditions.always,
         "properties": [
             {
+                "field": "001",
+                "property": "bf:identifiedBy",
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Local"],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['[0:]']) }),
+                            "bf:assigner": (patterns.uri, { "fieldref": "003", "data": [(filters.lower, ['[0:]']), (filters.appenduri, 'http://id.loc.gov/vocabulary/organizations/'), ] })
+                        }
+                    }
+                )
+            },
+            {
                 "field": "010",
                 "property": "bf:identifiedBy",
                 "pattern": (patterns.object_simple, { "objtypes": ["bf:Lccn"], "valuesprop": "rdf:value", "data": (None, ['a']) })

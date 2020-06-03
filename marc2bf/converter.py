@@ -140,7 +140,7 @@ class M2BFConverter:
                                 if "data" in params:
                                     params["data"] = self._handle_data(f, params["data"])
                                 if "props" in params:
-                                    params["props"] = self._handle_props(f, params["props"])
+                                    params["props"] = self._handle_props(r, f, params["props"])
                                 if "uri" in params:
                                     params["uri"] = self._handle_uri(f, params["uri"])
                                     if 'uriref' in params and params["uri"][0] != "":
@@ -231,6 +231,7 @@ class M2BFConverter:
         
     def _handle_props(
         self,
+        record,
         field,
         props
     ) -> object:
@@ -241,11 +242,16 @@ class M2BFConverter:
             kfn = props[k][0]
             # This is the variables/parameters, one of which will be data
             kparams = props[k][1]
-            if "data" in kparams:
+            if "fieldref" in kparams:
+                if kparams["fieldref"] in record:
+                    for tempfield in record[kparams["fieldref"]]:
+                        kparams["data"] = self._handle_data(tempfield, kparams["data"])
+                del kparams["fieldref"]
+            elif "data" in kparams:
                 kparams["data"] = self._handle_data(field, kparams["data"])
-            if "props" in kparams:
-                kparams["props"] = self._handle_props(field, kparams["props"])
-            if "uri" in kparams:
+            elif "props" in kparams:
+                kparams["props"] = self._handle_props(record, field, kparams["props"])
+            elif "uri" in kparams:
                 kparams["uri"] = self._handle_uri(field, kparams["uri"])
 
             subresourcedata = kfn(**kparams)

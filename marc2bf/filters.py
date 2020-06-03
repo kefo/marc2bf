@@ -107,6 +107,16 @@ class Filters:
         else:
             return data[:-1]
             
+    def lower(
+        self,
+        data: list = []
+    ) -> str:
+        newdata = []
+        for d in data:
+            d = d.lower().strip()
+            newdata.append(d)
+        return newdata
+            
     def prepend(
         self,
         data: list = [],
