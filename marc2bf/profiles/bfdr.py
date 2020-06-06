@@ -74,6 +74,7 @@ profile = [
             {
                 "field": "010",
                 "property": "bf:identifiedBy",
+                "conditions": (conditions.exists, ['a']),
                 "pattern": (patterns.object_simple, { "objtypes": ["bf:Lccn"], "valuesprop": "rdf:value", "data": (None, ['a']) })
             },
             {
@@ -137,8 +138,24 @@ profile = [
         "properties": [
             {
                 "field": "010",
+                "conditions": (conditions.exists, ['a']),
                 "property": "bf:identifiedBy",
                 "pattern": (patterns.object_simple, { "objtypes": ["bf:Lccn"], "valuesprop": "rdf:value", "data": (None, ['a']) })
+            },
+            {
+                "field": "010",
+                "property": "bf:identifiedBy",
+                "conditions": (conditions.exists, ['z']),
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Lccn"],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
+                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                        }
+                    }
+                ),
             },
             {
                 "field": ["100", "110", "111"],

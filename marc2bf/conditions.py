@@ -33,6 +33,19 @@ class Conditions:
         data: object = {}
     ) -> int:
         if "subfields" in field and "t" in field["subfields"]:
+            # dollar t exists, so no_dollar_t is false
             return False
         return True
-    
+
+    def exists(
+        self,
+        record: object = {},
+        field: object = {},
+        data: object = {}
+    ) -> int:
+        if "subfields" in field:
+            for sf in field["subfields"]:
+                key = list(sf.keys())[0]
+                if key in data:
+                    return True
+        return False

@@ -92,7 +92,7 @@ class M2BFConverter:
                     conditionfn = profile["conditions"]
                     to_continue = conditionfn(r)
                     if not to_continue:
-                        pass
+                        continue
                 uri = ""
                 resource = {"@type": profile["resourcetype"]}
                 if 'seturi' in profile:
@@ -118,8 +118,9 @@ class M2BFConverter:
                         if field in r:
                             prop = i["property"]
                             fn = i["pattern"][0]
-                            params = deepcopy(i["pattern"][1])
+                            # params = deepcopy(i["pattern"][1])
                             for f in r[field]:
+                                params = deepcopy(i["pattern"][1])
                                 if 'conditions' in i:
                                     if not isinstance(i["conditions"], list):
                                         i["conditions"] = [i["conditions"]]
@@ -132,11 +133,11 @@ class M2BFConverter:
                                             to_continue = conditionfn(r, f, conditiondata)
                                         else:
                                             to_continue = conditionfn(r, f)
-                                        to_continue = conditionfn(r, f, conditiondata)
+                                        # to_continue = conditionfn(r, f, conditiondata)
                                         if not to_continue:
                                             continue_on = False
                                     if not continue_on:
-                                        break;
+                                        continue;
                                 if "data" in params:
                                     params["data"] = self._handle_data(f, params["data"])
                                 if "props" in params:
@@ -197,12 +198,12 @@ class M2BFConverter:
         datafn = primarydata[0]
         datafields = []
         for df in primarydata[1]:
-            if ':' in df:
+            if '=' in df:
+                datafields.append(df.split("=")[1])
+            elif ':' in df:
                 datafields.append(eval('field["content"]' + df))
             elif df == "ind1" or df == "ind2" or df == "tag":
                datafields.append(field[df])
-            elif '=' in df:
-                datafields.append(df.split("=")[1])
             elif df.startswith('%') and df.endswith("%"):
                 if df in self._urirefs:
                     datafields.append(self._urirefs[df])
@@ -212,6 +213,7 @@ class M2BFConverter:
                     if df == key:
                         datafields.append(sf[key])
         if datafn != None:
+            # print(datafn)
             fielddata = datafn(datafields)
             if not isinstance(fielddata, list):
                 fielddata = [fielddata]
@@ -246,12 +248,15 @@ class M2BFConverter:
                 if kparams["fieldref"] in record:
                     for tempfield in record[kparams["fieldref"]]:
                         kparams["data"] = self._handle_data(tempfield, kparams["data"])
+                else:
+                    kparams["data"] = ""
                 del kparams["fieldref"]
             elif "data" in kparams:
                 kparams["data"] = self._handle_data(field, kparams["data"])
-            elif "props" in kparams:
+            
+            if "props" in kparams:
                 kparams["props"] = self._handle_props(record, field, kparams["props"])
-            elif "uri" in kparams:
+            if "uri" in kparams:
                 kparams["uri"] = self._handle_uri(field, kparams["uri"])
 
             subresourcedata = kfn(**kparams)

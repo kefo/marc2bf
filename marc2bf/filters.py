@@ -41,6 +41,9 @@ class Filters:
         data: list = []
     ) -> str:
         data = data[0]
+        if int(data) == 0:
+            return ""
+            
         year = data[:4]
         month = data[4:6]
         day = data[6:8]
