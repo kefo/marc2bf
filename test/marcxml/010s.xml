@@ -1,0 +1,23 @@
+<record xmlns="http://www.loc.gov/MARC21/slim">
+  <leader>01035cam a2200325 a 4500</leader>
+  <controlfield tag="001">5226</controlfield>
+  <datafield tag="010" ind1=" " ind2=" ">
+    <subfield code="a">   82060878 </subfield>
+  </datafield>
+  <datafield tag="010" ind1=" " ind2=" ">
+    <subfield code="a">   1 </subfield>
+    <subfield code="a">   2 </subfield>
+  </datafield>
+  <datafield tag="010" ind1=" " ind2=" ">
+    <subfield code="z">   3 </subfield>
+    <subfield code="z">   4 </subfield>
+  </datafield>
+  <!--
+  <datafield tag="010" ind1=" " ind2=" ">
+    <subfield code="a">   3 </subfield>
+    <subfield code="a">   4 </subfield>
+    <subfield code="z">   3 </subfield>
+    <subfield code="z">   4 </subfield>
+  </datafield>
+  -->
+</record>
