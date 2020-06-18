@@ -7,5 +7,4 @@ rules.log
 
 *.pyc
 
-
-
+*egg-info/
