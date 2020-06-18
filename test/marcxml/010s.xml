@@ -5,12 +5,17 @@
     <subfield code="a">   82060878 </subfield>
   </datafield>
   <datafield tag="010" ind1=" " ind2=" ">
-    <subfield code="a">   1 </subfield>
-    <subfield code="a">   2 </subfield>
+    <subfield code="a">1</subfield>
+    <subfield code="a">2 </subfield>
   </datafield>
   <datafield tag="010" ind1=" " ind2=" ">
-    <subfield code="z">   3 </subfield>
-    <subfield code="z">   4 </subfield>
+    <subfield code="z">3</subfield>
+    <subfield code="z">4</subfield>
+  </datafield>
+  <datafield tag="010" ind1=" " ind2=" ">
+    <subfield code="a">5</subfield>
+    <subfield code="z">6</subfield>
+    <subfield code="z">7</subfield>
   </datafield>
   <!--
   <datafield tag="010" ind1=" " ind2=" ">
