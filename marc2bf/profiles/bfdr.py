@@ -78,6 +78,22 @@ profile = [
                 "pattern": (patterns.object_simple, { "objtypes": ["bf:Lccn"], "valuesprop": "rdf:value", "data": (None, ['a']) })
             },
             {
+                "field": "010",
+                "property": "bf:identifiedBy",
+                "conditions": (conditions.exists, ['z']),
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Lccn"],
+                        "repeat_on_subfields": ['z'],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
+                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                        }
+                    }
+                ),
+            },
+            {
                 "field": "260",
                 "property": "bf:provisionActivityStatement",
                 "pattern": (patterns.literal, { "data": (filters.join, ['a', 'b', 'c']) })
@@ -137,6 +153,7 @@ profile = [
         "condition": conditions.always,
         "properties": [
             {
+                # This should be fine because 'a' is NR.  Of course there's bound to be a record where this is violated, but ....
                 "field": "010",
                 "conditions": (conditions.exists, ['a']),
                 "property": "bf:identifiedBy",
@@ -150,6 +167,7 @@ profile = [
                     patterns.object_complex, 
                     { 
                         "objtypes": ["bf:Lccn"],
+                        "repeat_on_subfields": ['z'],
                         "props": {
                             "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
                             "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),

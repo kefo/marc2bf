@@ -54,7 +54,17 @@ class M2BFConverter:
                     self.records.append(record)
         elif filetype == "xml":
             self.records = parse_xml_to_array(mrcfile)
-        return None    
+        return None
+
+    def graph(
+        self
+    ) -> Graph:
+        try:
+            self._g = Graph()
+            jsonld_str = json.dumps(self.jsonld_obj)
+            return self._g.parse(data=jsonld_str, format='json-ld')
+        except AttributeError:
+            return None
 
     def convert(
         self
@@ -72,7 +82,6 @@ class M2BFConverter:
                 "content": rdict["leader"]
             }
             r["leader"].append(leader)
-            
             for f in rdict["fields"]:
                 for k in f:
                     if int(k) < 10:
@@ -85,7 +94,9 @@ class M2BFConverter:
                         r[k].append(field)
                     else:
                         r[k] = [field]
-            # print(r)
+                
+            #print(json.dumps(r, indent=4))
+            #sys.exit(0)
             for profile in self._profile:
                 if 'conditions' in profile:
                     # Conditions at the profile level must look at entire marc record
@@ -138,21 +149,68 @@ class M2BFConverter:
                                             continue_on = False
                                     if not continue_on:
                                         continue;
-                                if "data" in params:
-                                    params["data"] = self._handle_data(f, params["data"])
-                                if "props" in params:
-                                    params["props"] = self._handle_props(r, f, params["props"])
-                                if "uri" in params:
-                                    params["uri"] = self._handle_uri(f, params["uri"])
-                                    if 'uriref' in params and params["uri"][0] != "":
-                                        self._urirefs[params["uriref"]] = params["uri"]
-                                        del params["uriref"]
-                                objectdata = fn(**params)
-                                if prop not in resource:
-                                    resource[prop] = []
-                                resource[prop].append(objectdata)
+
+                                if "repeat_on_subfields" in params and "props" in params:
+                                    new_fields = []
+                                    if 'subfields' in f:
+                                        common_subfields = []
+                                        new_subfields = []
+                                        subfield_group = []
+                                        foundrepeater = False
+                                        for sf in f["subfields"]:
+                                            sfkey = list(sf.keys())[0]
+                                            sfvalue = sf[sfkey]
+                                            
+                                            if sfkey in params["repeat_on_subfields"]:
+                                                foundrepeater = True
+                                                if len(subfield_group) > 0:
+                                                    new_sf_group = common_subfields + subfield_group
+                                                    new_subfields.append(new_sf_group)
+                                                    subfield_group = []
+                                                subfield_group.append(sf)
+                                            elif foundrepeater == False:
+                                                common_subfields.append(sf)
+                                            else:
+                                                subfield_group.append(sf)
+                                        if len(subfield_group) > 0:
+                                            new_sf_group = common_subfields + subfield_group
+                                            new_subfields.append(new_sf_group)
+                                        else:
+                                            new_subfields.append(common_subfields)
+                                            
+                                        for nsf in new_subfields:
+                                            newf = {
+                                                'tag': f["tag"],
+                                                'ind1': f["ind1"],
+                                                'ind2': f["ind2"],
+                                                'subfields': nsf
+                                            }
+                                            new_fields.append(newf)
+                                    del params["repeat_on_subfields"]
+                                    for newf in new_fields:
+                                        newparams = deepcopy(params)
+                                        newparams["props"] = self._handle_props(r, newf, newparams["props"])
+                                        objectdata = fn(**newparams)
+                                        if prop not in resource:
+                                            resource[prop] = []
+                                        resource[prop].append(objectdata)
+                                else:
+                                    if "data" in params:
+                                        params["data"] = self._handle_data(f, params["data"])
+                                    elif "props" in params:
+                                        params["props"] = self._handle_props(r, f, params["props"])
+                                
+                                    if "uri" in params:
+                                        params["uri"] = self._handle_uri(f, params["uri"])
+                                        if 'uriref' in params and params["uri"][0] != "":
+                                            self._urirefs[params["uriref"]] = params["uri"]
+                                            del params["uriref"]
+                                    objectdata = fn(**params)
+                                    if prop not in resource:
+                                        resource[prop] = []
+                                    resource[prop].append(objectdata)
                 self._graph.append(resource)
-                print(resource)
+                # print(resource)
                 
         self.jsonld_obj = {
             "@context": self._context,
@@ -164,8 +222,7 @@ class M2BFConverter:
         self,
         format: str = "pretty-xml"
     ) -> str:
-        jsonld_str = json.dumps(self.jsonld_obj)
-        self._g.parse(data=jsonld_str, format='json-ld')
+        self.graph()
         return self._g.serialize(format=format)
         
     def set_profile(
