@@ -1,0 +1,32 @@
+<record xmlns="http://www.loc.gov/MARC21/slim">
+  <leader>01035cam a2200325 a 4500</leader>
+  <controlfield tag="001">5226</controlfield>
+  <!--
+    015 	##$aB67-20987
+    015 	##$aB67-20988$qpbk 
+    015 	##$a06,A29,1122$z05,N51,1204$2dnb
+    015 	##$a67-A14-54$2dnb
+    015 	##$a67-A14-55$qsome extra info$2bnf
+  -->
+  <datafield tag="015" ind1=" " ind2=" ">
+    <subfield code="a">B67-20987</subfield>
+  </datafield>
+  <datafield tag="015" ind1=" " ind2=" ">
+    <subfield code="a">B67-20988</subfield>
+    <subfield code="q">pbk</subfield>
+  </datafield>
+  <datafield tag="015" ind1=" " ind2=" ">
+    <subfield code="z">67-A14-54</subfield>
+    <subfield code="2">dnb</subfield>
+  </datafield>
+  <datafield tag="015" ind1=" " ind2=" ">
+    <subfield code="a">06,A29,1122</subfield>
+    <subfield code="z">05,N51,1204</subfield>
+    <subfield code="2">dnb</subfield>
+  </datafield>
+  <datafield tag="015" ind1=" " ind2=" ">
+    <subfield code="a">67-A14-55</subfield>
+    <subfield code="q">some extra info</subfield>
+    <subfield code="2">bnf</subfield>
+  </datafield>
+</record>

@@ -7,7 +7,7 @@ print()
 
 
 c = M2BFConverter()
-c.load(mrcfile="test/marcxml/t1.xml", filetype="xml")
+c.load(mrcfile="test/marcxml/015s.xml", filetype="xml")
 c.convert()
 print(c.serialize('n3').decode("utf-8"))
 

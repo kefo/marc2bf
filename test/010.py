@@ -18,8 +18,7 @@ ns_collection = {
     'rdfs' : namespace.RDFS,
     'rel' : Namespace('http://id.loc.gov/vocabulary/relators/'),
     'skos' : namespace.SKOS,
-    'xsd' : 
-        namespace.XSD,
+    'xsd' : namespace.XSD,
     
     'bf' : Namespace('http://id.loc.gov/ontologies/bibframe/'),
     'bflc' : Namespace('http://id.loc.gov/ontologies/bflc/'),
@@ -42,7 +41,7 @@ class IdentifiersTest(unittest.TestCase):
         c.load(mrcfile="test/marcxml/010s.xml", filetype="xml")
         c.convert()
         self.g = c.graph()   
-        print(c.serialize('n3').decode("utf-8"))
+        # print(c.serialize('n3').decode("utf-8"))
 
 
     def test_invalid_010s_on_work_1(self):

@@ -94,6 +94,41 @@ profile = [
                 ),
             },
             {
+                "field": "015",
+                "property": "bf:identifiedBy",
+                "conditions": (conditions.exists, ['a']),
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Nbn"],
+                        "repeat_on_subfields": ['a'],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['a']) }),
+                            "bf:source": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/nationalbibschemes/'), ] }),
+                            "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
+                        }
+                    }
+                ),
+            },
+            {
+                "field": "015",
+                "property": "bf:identifiedBy",
+                "conditions": (conditions.exists, ['z']),
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Nbn"],
+                        "repeat_on_subfields": ['z'],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
+                            "bf:source": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/nationalbibschemes/'), ] }),
+                            "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
+                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                        }
+                    }
+                ),
+            },
+            {
                 "field": "260",
                 "property": "bf:provisionActivityStatement",
                 "pattern": (patterns.literal, { "data": (filters.join, ['a', 'b', 'c']) })
@@ -170,6 +205,41 @@ profile = [
                         "repeat_on_subfields": ['z'],
                         "props": {
                             "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
+                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                        }
+                    }
+                ),
+            },
+            {
+                "field": "015",
+                "property": "bf:identifiedBy",
+                "conditions": (conditions.exists, ['a']),
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Nbn"],
+                        "repeat_on_subfields": ['a'],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['a']) }),
+                            "bf:source": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/nationalbibschemes/'), ] }),
+                            "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
+                        }
+                    }
+                ),
+            },
+            {
+                "field": "015",
+                "property": "bf:identifiedBy",
+                "conditions": (conditions.exists, ['z']),
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Nbn"],
+                        "repeat_on_subfields": ['z'],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
+                            "bf:source": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/nationalbibschemes/'), ] }),
+                            "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
                             "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
                         }
                     }
