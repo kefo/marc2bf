@@ -37,3 +37,9 @@ MARC Bib 007
 -------------
 For Text (007/00=t), LC Spec says 'nac,' which I suppose means "not attempt to convert?" 
 This is probably fine, but perhaps it's just easy to do?  Need example.
+
+
+MARC Bib 010, 015
+-------------
+These identifiers are placed on both the Work and Instance.  These identifiers are important 
+in a MARC environment but their meaning in a BF environment are unclear.
