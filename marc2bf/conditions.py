@@ -49,3 +49,14 @@ class Conditions:
                 if key in data:
                     return True
         return False
+        
+    def ind1_is(
+        self,
+        record: object = {},
+        field: object = {},
+        data: object = {}
+    ) -> int:
+        if "ind1" in field:
+            if field["ind1"] in data:
+                return True
+        return False
