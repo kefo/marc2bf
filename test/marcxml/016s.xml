@@ -1,0 +1,29 @@
+<record xmlns="http://www.loc.gov/MARC21/slim">
+  <leader>01035cam a2200325 a 4500</leader>
+  <controlfield tag="001">5226</controlfield>
+  <!--
+    016 	##$a#730032015##rev
+    016 	##$a#84074272XE# 
+    016 	7#$a94.763966.7$2GyFmDB
+    016 	7#$aPTBN000004618$2PoLiBN
+    016 	##$a#890000298##rev$z#89000298## 
+  -->
+  <datafield tag="016" ind1=" " ind2=" ">
+    <subfield code="a">#730032015##rev</subfield>
+  </datafield>
+  <datafield tag="016" ind1=" " ind2=" ">
+    <subfield code="a">#84074272XE#</subfield>
+  </datafield>
+  <datafield tag="016" ind1="7" ind2=" ">
+    <subfield code="a">94.763966.7</subfield>
+    <subfield code="2">GyFmDB</subfield>
+  </datafield>
+  <datafield tag="016" ind1="7" ind2=" ">
+    <subfield code="a">PTBN000004618</subfield>
+    <subfield code="2">PoLiBN</subfield>
+  </datafield>
+  <datafield tag="016" ind1=" " ind2=" ">
+    <subfield code="a">#890000298##rev</subfield>
+    <subfield code="z">89000298##</subfield>
+  </datafield>
+</record>

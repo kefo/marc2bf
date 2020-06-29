@@ -57,6 +57,7 @@ profile = [
         "resourcetype": "bf:Instance",
         "condition": conditions.always,
         "properties": [
+            # This needs refinement.  If 003 is not present, then there is no organization associated with the local identifier.
             {
                 "field": "001",
                 "property": "bf:identifiedBy",
@@ -123,6 +124,70 @@ profile = [
                             "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
                             "bf:source": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/nationalbibschemes/'), ] }),
                             "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
+                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                        }
+                    }
+                ),
+            },
+            {
+                "field": "016",
+                "property": "bf:identifiedBy",
+                "conditions": [(conditions.exists, ['a']), (conditions.exists, ['2']),],
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Local"],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['a']) }),
+                            "bf:source": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/organizations/'), ] }),
+                        }
+                    }
+                ),
+            },
+            {
+                "field": "016",
+                "property": "bf:identifiedBy",
+                "conditions": [(conditions.exists, ['z']), (conditions.exists, ['2']),],
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Local"],
+                        "repeat_on_subfields": ['z'],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
+                            "bf:source": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/organizations/'), ] }),
+                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                        }
+                    }
+                ),
+            },
+            {
+                "field": "016",
+                "property": "bf:identifiedBy",
+                "conditions": [(conditions.exists, ['a']), (conditions.ind1_is, [' '])],
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Local"],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['a']) }),
+                            "bf:source": (patterns.uri, { "data": [(None, ['value=https://www.bac-lac.gc.ca/'])] }),
+                        }
+                    }
+                ),
+            },
+            {
+                "field": "016",
+                "property": "bf:identifiedBy",
+                "conditions": [(conditions.exists, ['z']), (conditions.ind1_is, [' '])],
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Local"],
+                        "repeat_on_subfields": ['z'],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
+                            "bf:source": (patterns.uri, { "data": [(None, ['value=https://www.bac-lac.gc.ca/'])] }),
                             "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
                         }
                     }
