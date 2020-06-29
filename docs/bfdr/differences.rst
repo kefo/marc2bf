@@ -43,3 +43,8 @@ MARC Bib 010, 015
 -------------
 These identifiers are placed on both the Work and Instance.  These identifiers are important 
 in a MARC environment but their meaning in a BF environment are unclear.
+
+
+MARC Bib 016
+-------------
+Seeing note about 001, but, coming from MARC, this identifier identifies the instance.
