@@ -41,7 +41,7 @@ class IdentifiersTest(unittest.TestCase):
         c.load(mrcfile="test/marcxml/015s.xml", filetype="xml")
         c.convert()
         self.g = c.graph()   
-        # print(c.serialize('n3').decode("utf-8"))
+        print(c.serialize('n3').decode("utf-8"))
 
 
     def test_invalid_015s_on_work_1(self):
