@@ -40,6 +40,8 @@ class M2BFConverter:
         self._g = Graph()
         self.set_profile()
         self.records = []
+        if 'orgresponsible' not in config:
+            config['orgresponsible'] = "http://example.org/org/responsible/for/marc/record"
         return None
 
     def load(
@@ -256,7 +258,10 @@ class M2BFConverter:
         datafields = []
         for df in primarydata[1]:
             if '=' in df:
-                datafields.append(df.split("=")[1])
+                value = df.split("=")[1]
+                if value == "%ORGRESPONSIBLE%":
+                    value = self.config["orgresponsible"]
+                datafields.append(value)
             elif ':' in df:
                 datafields.append(eval('field["content"]' + df))
             elif df == "ind1" or df == "ind2" or df == "tag":
@@ -343,7 +348,10 @@ class M2BFConverter:
                     if v == key:
                         datafields.append(sf[key])
             elif '=' in v:
-                datafields.append(v.split("=")[1])
+                value = v.split("=")[1]
+                if value == "%ORGRESPONSIBLE%":
+                    value = self.config["orgresponsible"]
+                datafields.append(value)
             elif v.startswith('%') and v.endswith("%"):
                 if v in self._urirefs:
                     datafields.append(self._urirefs[v])
