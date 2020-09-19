@@ -50,6 +50,20 @@ class Conditions:
                     return True
         return False
         
+    def not_exists(
+        self,
+        record: object = {},
+        field: object = {},
+        data: object = {}
+    ) -> int:
+        exists = False
+        if "subfields" in field:
+            for sf in field["subfields"]:
+                key = list(sf.keys())[0]
+                if key in data:
+                    exists = True
+        return not exists
+        
     def ind1_is(
         self,
         record: object = {},
