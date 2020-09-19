@@ -54,7 +54,9 @@ profile = [
         ]
     },
     {
-        "resourcetype": "bf:Instance",
+        "resourcetype": "bf:AdminMetadata",
+        "seturi": [(filters.bnode, )],
+        'uriref': "%AM3%",
         "condition": conditions.always,
         "properties": [
             # This needs refinement.  If 003 is not present, then there is no organization associated with the local identifier.
@@ -72,7 +74,14 @@ profile = [
                     }
                 )
             },
+        ]
+    },
+    {
+        "resourcetype": "bf:Instance",
+        "condition": conditions.always,
+        "properties": [
             {
+                # This should be fine because 'a' is NR.  Of course there's bound to be a record where this is violated, but ....
                 "field": "010",
                 "property": "bf:identifiedBy",
                 "conditions": (conditions.exists, ['a']),
@@ -97,7 +106,7 @@ profile = [
             {
                 "field": "015",
                 "property": "bf:identifiedBy",
-                "conditions": (conditions.exists, ['a']),
+                "conditions": [(conditions.exists, ['a']), (conditions.exists, ['2']),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
@@ -114,7 +123,7 @@ profile = [
             {
                 "field": "015",
                 "property": "bf:identifiedBy",
-                "conditions": (conditions.exists, ['z']),
+                "conditions": [(conditions.exists, ['z']), (conditions.exists, ['2']),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
@@ -130,9 +139,44 @@ profile = [
                 ),
             },
             {
+                "field": "015",
+                "property": "bf:identifiedBy",
+                "conditions": [(conditions.exists, ['a']), (conditions.not_exists, ['2']),],
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Nbn"],
+                        "repeat_on_subfields": ['a'],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['a']) }),
+                            "bf:source": (patterns.uri, { "data": [(None, ['value=%ORGRESPONSIBLE%'])] }),
+                            "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
+                        }
+                    }
+                ),
+            },
+            {
+                "field": "015",
+                "property": "bf:identifiedBy",
+                "conditions": [(conditions.exists, ['z']), (conditions.not_exists, ['2']),],
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Nbn"],
+                        "repeat_on_subfields": ['z'],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
+                            "bf:source": (patterns.uri, { "data": [(None, ['value=%ORGRESPONSIBLE%'])] }),
+                            "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
+                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                        }
+                    }
+                ),
+            },
+            {
                 "field": "016",
                 "property": "bf:identifiedBy",
-                "conditions": [(conditions.exists, ['a']), (conditions.exists, ['2']),],
+                "conditions": [(conditions.exists, ['a']), (conditions.ind1_is, ['7']), (conditions.exists, ['2']),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
@@ -147,7 +191,7 @@ profile = [
             {
                 "field": "016",
                 "property": "bf:identifiedBy",
-                "conditions": [(conditions.exists, ['z']), (conditions.exists, ['2']),],
+                "conditions": [(conditions.exists, ['z']), (conditions.ind1_is, ['7']), (conditions.exists, ['2']),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
@@ -244,7 +288,7 @@ profile = [
             {
                 "field": "001", # Using 001 here is a bit of a hack.  We need to pick a field in the MARC record.  All will have this one.  Could have chosen leader.
                 "property": "bf:adminMetadata",
-                "pattern": (patterns.uri, { "data": [(None, ['%AM1%', '%AM2%'])] })
+                "pattern": (patterns.uri, { "data": [(None, ['%AM1%', '%AM2%', '%AM3%'])] })
             },
         ]
     },
@@ -253,32 +297,9 @@ profile = [
         "condition": conditions.always,
         "properties": [
             {
-                # This should be fine because 'a' is NR.  Of course there's bound to be a record where this is violated, but ....
-                "field": "010",
-                "conditions": (conditions.exists, ['a']),
-                "property": "bf:identifiedBy",
-                "pattern": (patterns.object_simple, { "objtypes": ["bf:Lccn"], "valuesprop": "rdf:value", "data": (None, ['a']) })
-            },
-            {
-                "field": "010",
-                "property": "bf:identifiedBy",
-                "conditions": (conditions.exists, ['z']),
-                "pattern": (
-                    patterns.object_complex, 
-                    { 
-                        "objtypes": ["bf:Lccn"],
-                        "repeat_on_subfields": ['z'],
-                        "props": {
-                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
-                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
-                        }
-                    }
-                ),
-            },
-            {
                 "field": "015",
                 "property": "bf:identifiedBy",
-                "conditions": (conditions.exists, ['a']),
+                "conditions": [(conditions.exists, ['a']), (conditions.exists, ['2']),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
@@ -295,7 +316,7 @@ profile = [
             {
                 "field": "015",
                 "property": "bf:identifiedBy",
-                "conditions": (conditions.exists, ['z']),
+                "conditions": [(conditions.exists, ['z']), (conditions.exists, ['2']),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
@@ -304,6 +325,41 @@ profile = [
                         "props": {
                             "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
                             "bf:source": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/nationalbibschemes/'), ] }),
+                            "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
+                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                        }
+                    }
+                ),
+            },
+            {
+                "field": "015",
+                "property": "bf:identifiedBy",
+                "conditions": [(conditions.exists, ['a']), (conditions.not_exists, ['2']),],
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Nbn"],
+                        "repeat_on_subfields": ['a'],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['a']) }),
+                            "bf:source": (patterns.uri, { "data": [(None, ['value=%ORGRESPONSIBLE%'])] }),
+                            "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
+                        }
+                    }
+                ),
+            },
+            {
+                "field": "015",
+                "property": "bf:identifiedBy",
+                "conditions": [(conditions.exists, ['z']), (conditions.not_exists, ['2']),],
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Nbn"],
+                        "repeat_on_subfields": ['z'],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
+                            "bf:source": (patterns.uri, { "data": [(None, ['value=%ORGRESPONSIBLE%'])] }),
                             "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
                             "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
                         }
