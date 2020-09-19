@@ -238,6 +238,61 @@ profile = [
                 ),
             },
             {
+                "field": "017",
+                "property": "bf:identifiedBy",
+                "conditions": [(conditions.exists, ['a'])],
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:CopyrightNumber"],
+                        "repeat_on_subfields": ['a'],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['a']) }),
+                            "rdfs:comment": (patterns.literal, { "data": [(None, ['i'])] }),
+                            "bf:date": (patterns.literal, { "data": [(None, ['d'])] }),
+                            "bf:source": (
+                                patterns.object_complex, 
+                                { 
+                                    "objtypes": ["bf:Agent"],
+                                    "uri": (filters.uri_or_bnode, {"data": (None, ['1'])}),
+                                    "props": {
+                                        "rdfs:label": (patterns.literal, { "data": (filters.join, ['b']) }),
+                                    }
+                                }
+                            ),
+                        }
+                    }
+                ),
+            },
+            {
+                "field": "017",
+                "property": "bf:identifiedBy",
+                "conditions": [(conditions.exists, ['z'])],
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:CopyrightNumber"],
+                        "repeat_on_subfields": ['z'],
+                        "props": {
+                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
+                            "rdfs:comment": (patterns.literal, { "data": [(None, ['i'])] }),
+                            "bf:date": (patterns.literal, { "data": [(None, ['d'])] }),
+                            "bf:source": (
+                                patterns.object_complex, 
+                                { 
+                                    "objtypes": ["bf:Agent"],
+                                    "uri": (filters.uri_or_bnode, {"data": (None, ['1'])}),
+                                    "props": {
+                                        "rdfs:label": (patterns.literal, { "data": (filters.join, ['b']) }),
+                                    }
+                                }
+                            ),
+                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                        }
+                    }
+                ),
+            },
+            {
                 "field": "260",
                 "property": "bf:provisionActivityStatement",
                 "pattern": (patterns.literal, { "data": (filters.join, ['a', 'b', 'c']) })

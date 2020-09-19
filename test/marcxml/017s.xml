@@ -1,0 +1,37 @@
+<record xmlns="http://www.loc.gov/MARC21/slim">
+  <leader>01035cam a2200325 a 4500</leader>
+  <controlfield tag="001">5226</controlfield>
+  <!--
+017 	##$aEU781596$bU.S. Copyright Office
+017 	##$aDL 80-0-1524$bBibliothèque nationale du Québec
+017 	##$aPA1116341$bU.S. Copyright Office$d20020703
+017 	##$aPA52-758 (English subtitled version)$aPA52-759 (English language dubbed version)$bU.S. Copyright Office
+017 	##$aVA65-843$aVA65-845 $aVA65-849$bU.S. Copyright Office
+017 	#8$iSuppl. reg.:$aPA001116455$bU.S. Copyright Office$d20020725
+017 	#8$iOrig. reg.$aJP732$bU.S. Copyright Office$d19510504
+##$aM44120-2006 $zM444120-2006
+-->
+  <datafield tag="017" ind1=" " ind2=" ">
+    <subfield code="a">EU781596</subfield>
+    <subfield code="b">U.S. Copyright Office</subfield>
+  </datafield>
+  <datafield tag="017" ind1=" " ind2=" ">
+    <subfield code="a">A1116341</subfield>
+    <subfield code="b">U.S. Copyright Office</subfield>
+    <subfield code="d">20020703</subfield>
+  </datafield>
+  <datafield tag="017" ind1=" " ind2=" ">
+    <subfield code="a">PA52-758 (English subtitled version)</subfield>
+    <subfield code="a">PA52-759 (English language dubbed version)</subfield>
+    <subfield code="b">U.S. Copyright Office</subfield>
+  </datafield>
+  <datafield tag="017" ind1=" " ind2=" ">
+    <subfield code="i">Suppl. reg.:</subfield>
+    <subfield code="a">PA001116455</subfield>
+    <subfield code="b">U.S. Copyright Office</subfield>
+  </datafield>
+  <datafield tag="017" ind1=" " ind2=" ">
+    <subfield code="a">M44120-2006 </subfield>
+    <subfield code="z">M444120-2006</subfield>
+  </datafield>
+</record>
