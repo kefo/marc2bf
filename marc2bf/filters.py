@@ -1,3 +1,4 @@
+import re 
 from rdflib import BNode
 
 class Filters:
@@ -35,7 +36,23 @@ class Filters:
     ) -> str:
         bnode = BNode()
         return bnode.n3()
-        
+
+    def extract_parenthetical(
+        self,
+        data: str = ''
+    ) -> str:
+        if isinstance(data, list):
+            if len(data) == 0:
+                return ""
+            else:
+                data = data[0]
+        if len(data) == 0:
+            return ""
+        elif '(' not in data:
+            return ""
+        else:
+            return data[data.find('(')+1:data.find(')')].strip()
+
     def f005date(
         self,
         data: list = []
@@ -53,7 +70,6 @@ class Filters:
         date = year + "-" + month + "-" + day + "T" + hour + ":" + minutes + ":" + seconds 
         return date
         
-    
     def f008date(
         self,
         data: list = []
@@ -81,6 +97,52 @@ class Filters:
                 data = data[0]
         if data in datamap:
             return datamap[data]
+            
+    def identifier_field_map(
+        self,
+        data: str = ""
+    ) -> str:
+        if isinstance(data, list):
+            if len(data) == 0:
+                return ""
+            else:
+                data = data[0]
+        if data == '010':
+            return "identifiers:lccn"
+        elif data == '015':
+            return "bf:Nbn"
+        elif data == '016':
+            return "bf:Local"
+        elif data == '017':
+            return "bf:CopyrightNumber"
+        elif data == '020':
+            return "identifiers:isbn"
+        elif data == '022':
+            return "identifiers:issn"
+        elif data == '025':
+            return "bf:LcOverseasAcq"
+        return ""
+
+    def identifier_024_map(
+        self,
+        data: str = ""
+    ) -> str:
+        if isinstance(data, list):
+            if len(data) == 0:
+                return ""
+            else:
+                data = data[0]
+        if data == '0':
+            return "identifiers:isrc"
+        elif data == '1':
+            return "identifiers:upc"
+        elif data == '2':
+            return "identifiers:ismn"
+        elif data == '3':
+            return "identifiers:ean"
+        elif data == '4':
+            return "identifiers:sici"
+        return ""
 
     def iscoded(
         self,
@@ -119,6 +181,39 @@ class Filters:
             d = d.lower().strip()
             newdata.append(d)
         return newdata
+
+    def no_ending_punctuation(
+        self,
+        data: str = ''
+    ) -> str:
+        if isinstance(data, list):
+            if len(data) == 0:
+                return ""
+            else:
+                data = data[0]
+        data = data.strip()
+        
+        re_pattern = '[\.;:]$'
+        instr = re.search(re_pattern, data)
+        if instr != None:
+            return re.sub(re_pattern, '', data)
+        else:
+            return data
+
+    def no_parenthetical(
+        self,
+        data: str = ''
+    ) -> str:
+        if isinstance(data, list):
+            if len(data) == 0:
+                return ""
+            else:
+                data = data[0]
+        data = data.strip()
+        if '(' not in data:
+            return data
+        else:
+            return data[0:data.find('(')].strip()
             
     def prepend(
         self,

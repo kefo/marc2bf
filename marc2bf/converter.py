@@ -23,6 +23,7 @@ class M2BFConverter:
             "madsrdf": "http://www.loc.gov/mads/rdf/v1#",
             "skos": "http://www.w3.org/2004/02/skos/core#",
             "bflc": "http://id.loc.gov/ontologies/bflc/",
+            "identifiers": "http://id.loc.gov/vocabulary/identifiers/",
             "foaf": "http://xmlns.com/foaf/0.1/",
             "xsd": "http://www.w3.org/2001/XMLSchema#",
             "bfdr": "http://github.com/kefo/bfdr/",
@@ -97,7 +98,7 @@ class M2BFConverter:
                     else:
                         r[k] = [field]
                 
-            #print(json.dumps(r, indent=4))
+            print(json.dumps(r, indent=4))
             #sys.exit(0)
             for profile in self._profile:
                 if 'conditions' in profile:
@@ -123,80 +124,78 @@ class M2BFConverter:
                 if 'uriref' in profile and uri != "":
                     self._urirefs[profile["uriref"]] = uri
                     
+                # Resource Properties
                 for i in profile["properties"]:
+                    # Can be a single MARC field or multiple
                     if not isinstance(i["field"], list):
                         i["field"] = [i["field"]]
+                    # Iterate through each field.
                     for ifield in i["field"]:
                         field = ifield
+                        
+                        # If the Record has this field....
                         if field in r:
                             prop = i["property"]
                             fn = i["pattern"][0]
+                            
+                            pattern_fn = i["pattern"][0]
+                            
                             # params = deepcopy(i["pattern"][1])
-                            for f in r[field]:
-                                params = deepcopy(i["pattern"][1])
-                                if 'conditions' in i:
-                                    if not isinstance(i["conditions"], list):
-                                        i["conditions"] = [i["conditions"]]
-                                    # Conditions at the profile level must look at entire marc record
-                                    continue_on = True
-                                    for condition in i["conditions"]:
-                                        conditionfn = condition[0]
-                                        if len(condition) == 2:
-                                            conditiondata = condition[1]
-                                            to_continue = conditionfn(r, f, conditiondata)
-                                        else:
-                                            to_continue = conditionfn(r, f)
-                                        # to_continue = conditionfn(r, f, conditiondata)
-                                        if not to_continue:
-                                            continue_on = False
-                                    if not continue_on:
-                                        continue;
-
-                                if "repeat_on_subfields" in params and "props" in params:
-                                    new_fields = []
-                                    if 'subfields' in f:
-                                        common_subfields = []
-                                        new_subfields = []
-                                        subfield_group = []
-                                        foundrepeater = False
-                                        for sf in f["subfields"]:
-                                            sfkey = list(sf.keys())[0]
-                                            sfvalue = sf[sfkey]
-                                            
-                                            if sfkey in params["repeat_on_subfields"]:
-                                                foundrepeater = True
-                                                if len(subfield_group) > 0:
-                                                    new_sf_group = common_subfields + subfield_group
-                                                    new_subfields.append(new_sf_group)
-                                                    subfield_group = []
-                                                subfield_group.append(sf)
-                                            elif foundrepeater == False:
-                                                common_subfields.append(sf)
-                                            else:
-                                                subfield_group.append(sf)
-                                        if len(subfield_group) > 0:
-                                            new_sf_group = common_subfields + subfield_group
-                                            new_subfields.append(new_sf_group)
-                                        else:
-                                            new_subfields.append(common_subfields)
-                                            
-                                        for nsf in new_subfields:
-                                            newf = {
-                                                'tag': f["tag"],
-                                                'ind1': f["ind1"],
-                                                'ind2': f["ind2"],
-                                                'subfields': nsf
-                                            }
-                                            new_fields.append(newf)
-                                    del params["repeat_on_subfields"]
-                                    for newf in new_fields:
-                                        newparams = deepcopy(params)
-                                        newparams["props"] = self._handle_props(r, newf, newparams["props"])
-                                        objectdata = fn(**newparams)
-                                        if prop not in resource:
-                                            resource[prop] = []
-                                        resource[prop].append(objectdata)
+                            
+                            # Iterate through each matching field in the MARC
+                            for base_f in r[field]:
+                                pattern_params = deepcopy(i["pattern"][1])
+                                
+                                process_f = []
+                                if "foreach" in i:
+                                    # foreach tuples look like: ('a', {'omit': ['z']})
+                                    for sfk, d in i["foreach"]:
+                                        if 'subfields' in base_f:
+                                            for sf in base_f["subfields"]:
+                                                sfkey = list(sf.keys())[0]
+                                                sfvalue = sf[sfkey]
+                                                if sfkey == sfk:
+                                                    new_sfs = []
+                                                    for sfcheck in base_f["subfields"]:
+                                                        sfcheck_key = list(sfcheck.keys())[0]
+                                                        sfcheck_value = sfcheck[sfcheck_key]
+                                                        if sfcheck_key == sfkey and sfvalue == sfcheck_value:
+                                                            new_sfs.append(sfcheck)
+                                                        elif sfcheck_key == sfkey and sfvalue != sfcheck_value:
+                                                            continue
+                                                        elif sfcheck_key not in d['omit']:
+                                                            new_sfs.append(sfcheck)
+                                                    newf = {
+                                                        'tag': base_f["tag"],
+                                                        'ind1': base_f["ind1"],
+                                                        'ind2': base_f["ind2"],
+                                                        'subfields': new_sfs
+                                                    }
+                                                    process_f.append(newf)
                                 else:
+                                    process_f = [base_f]
+                                print(process_f)
+                                
+                                for f in process_f:
+                                    params = deepcopy(i["pattern"][1])
+                                    if 'conditions' in i:
+                                        if not isinstance(i["conditions"], list):
+                                            i["conditions"] = [i["conditions"]]
+                                        # Conditions at the profile level must look at entire marc record
+                                        continue_on = True
+                                        for condition in i["conditions"]:
+                                            conditionfn = condition[0]
+                                            if len(condition) == 2:
+                                                conditiondata = condition[1]
+                                                to_continue = conditionfn(r, f, conditiondata)
+                                            else:
+                                                to_continue = conditionfn(r, f)
+                                            # to_continue = conditionfn(r, f, conditiondata)
+                                            if not to_continue:
+                                                continue_on = False
+                                        if not continue_on:
+                                            continue;
+
                                     if "data" in params:
                                         params["data"] = self._handle_data(f, params["data"])
                                     elif "props" in params:
@@ -207,12 +206,14 @@ class M2BFConverter:
                                         if 'uriref' in params and params["uri"][0] != "":
                                             self._urirefs[params["uriref"]] = params["uri"]
                                             del params["uriref"]
+                                    print(params)
                                     objectdata = fn(**params)
                                     if prop not in resource:
                                         resource[prop] = []
                                     resource[prop].append(objectdata)
                 self._graph.append(resource)
                 # print(resource)
+                # sys.exit(0)
                 
         self.jsonld_obj = {
             "@context": self._context,
@@ -279,8 +280,13 @@ class M2BFConverter:
             fielddata = datafn(datafields)
             if not isinstance(fielddata, list):
                 fielddata = [fielddata]
+            if len(fielddata) == 0:
+                fielddata = []
+            elif fielddata[0] == '':
+                fielddata = []
         else:
             fielddata = datafields
+
         if len(data) > 1:
             for additionaldata in data[1:]:
                 additionaldatafn = additionaldata[0]
@@ -306,6 +312,26 @@ class M2BFConverter:
             kfn = props[k][0]
             # This is the variables/parameters, one of which will be data
             kparams = props[k][1]
+            
+            # Conditions at the prop level can look at entire marc record
+            continue_on = True
+            if "conditions" in kparams:
+                if not isinstance(kparams["conditions"], list):
+                    kparams["conditions"] = [kparams["conditions"]]
+                
+                for condition in kparams["conditions"]:
+                    conditionfn = condition[0]
+                    if len(condition) == 2:
+                        conditiondata = condition[1]
+                        to_continue = conditionfn(record, field, conditiondata)
+                    else:
+                        to_continue = conditionfn(record, field)
+                    if not to_continue:
+                        continue_on = False
+                del kparams["conditions"]
+            if not continue_on:
+                continue;
+                                            
             if "fieldref" in kparams:
                 if kparams["fieldref"] in record:
                     for tempfield in record[kparams["fieldref"]]:
@@ -313,9 +339,18 @@ class M2BFConverter:
                 else:
                     kparams["data"] = ""
                 del kparams["fieldref"]
+            elif "subfieldref" in kparams:
+                if kparams["subfieldref"] in field:
+                    for tempfield in record[kparams["fieldref"]]:
+                        kparams["data"] = self._handle_data(tempfield, kparams["data"])
+                else:
+                    kparams["data"] = ""
+                del kparams["fieldref"]
             elif "data" in kparams:
                 kparams["data"] = self._handle_data(field, kparams["data"])
-            
+                if not isinstance(kparams["data"], list):
+                    kparams["data"] = [kparams["data"]]
+
             if "props" in kparams:
                 kparams["props"] = self._handle_props(record, field, kparams["props"])
             if "uri" in kparams:

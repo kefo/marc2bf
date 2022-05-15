@@ -1,3 +1,5 @@
+import re
+
 class Patterns:
 
     def literal(
@@ -70,37 +72,20 @@ class Patterns:
             objtypes = objtypes[0]
         obj["@type"] = objtypes
         for k in props:
-            obj[k] = props[k]
+            prop_k = k
+            re_pattern = '_[0-9]$'
+            instr = re.search(re_pattern, k)
+            if(instr != None):
+                # Ends with _number
+                prop_k = re.sub(re_pattern, '', prop_k)
+            if prop_k not in obj:
+                obj[prop_k] = props[k]
+            else:
+                obj[prop_k] += props[k]
+        print("obj is")
+        print(obj)
         return obj
-        
-    def objs_from_repeating_subfield(self,
-        uri: str = "",
-        objtypes: list = [],
-        props: object = {},
-        field: object = {}
-    ) -> object:
-        '''
-        {
-      "@id": "http://id.loc.gov/authorities/subjects/sh99001237",
-      "@type": [
-        "madsrdf:GenreForm",
-        "madsrdf:Authority"
-      ],
-      "madsrdf:authoritativeLabel": {
-        "@language": "en",
-        "@value": "Biography"
-      },
-        '''
-        obj = {}
-        if uri != "":
-            obj["@id"] = uri
-        if len(objtypes) == 1:
-            objtypes = objtypes[0]
-        obj["@type"] = objtypes
-        for k in props:
-            obj[k] = props[k]
-        return obj
-        
+
     def uri(
         self,
         data: list = []

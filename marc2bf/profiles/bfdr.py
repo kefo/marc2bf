@@ -82,157 +82,99 @@ profile = [
         "properties": [
             {
                 # This should be fine because 'a' is NR.  Of course there's bound to be a record where this is violated, but ....
-                "field": "010",
+                "field": ["010", "020", "025"],
                 "property": "bf:identifiedBy",
-                "conditions": (conditions.exists, ['a']),
-                "pattern": (patterns.object_simple, { "objtypes": ["bf:Lccn"], "valuesprop": "rdf:value", "data": (None, ['a']) })
-            },
-            {
-                "field": "010",
-                "property": "bf:identifiedBy",
-                "conditions": (conditions.exists, ['z']),
+                "conditions": (conditions.exists, ['a', 'z']),
+                "foreach": [('a', {'omit': ['z']}), ('z', {'omit': ['a']}),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
-                        "objtypes": ["bf:Lccn"],
-                        "repeat_on_subfields": ['z'],
+                        "objtypes": ["bf:Identifier"],
                         "props": {
-                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
-                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                            "rdf:type": (patterns.uri, { "data": (filters.identifier_field_map, ['tag']) }),
+                            "rdf:value": (patterns.literal, { "data": [(filters.no_parenthetical, ['a', 'z']), (filters.no_ending_punctuation, )] }),
+                            "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
+                            "bf:qualifier_0": (patterns.literal, { "data": [(filters.extract_parenthetical, ['a', 'z'])] }),
+                            "bf:status": (patterns.uri, { "conditions": (conditions.exists, ['z']), "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                            "bf:source": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/organizations/'), ] }),
                         }
                     }
                 ),
             },
+            # This 015 is when a national bib scheme is identified in the $2
             {
                 "field": "015",
                 "property": "bf:identifiedBy",
-                "conditions": [(conditions.exists, ['a']), (conditions.exists, ['2']),],
+                "conditions": [(conditions.exists, ['a', 'z']), (conditions.exists, ['2']),],
+                "foreach": [('a', {'omit': ['z']}), ('z', {'omit': ['a']}),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
-                        "objtypes": ["bf:Nbn"],
-                        "repeat_on_subfields": ['a'],
+                        "objtypes": ["bf:Identifier"],
                         "props": {
+                            "rdf:type": (patterns.uri, { "data": (filters.identifier_field_map, ['tag']) }),
                             "rdf:value": (patterns.literal, { "data": (None, ['a']) }),
                             "bf:source": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/nationalbibschemes/'), ] }),
                             "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
+                            "bf:status": (patterns.uri, { "conditions": (conditions.exists, ['z']), "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
                         }
                     }
                 ),
             },
+            # This 015 is when there is no national bib scheme in $2 - will set as org running conversion.
             {
                 "field": "015",
                 "property": "bf:identifiedBy",
-                "conditions": [(conditions.exists, ['z']), (conditions.exists, ['2']),],
+                "conditions": [(conditions.exists, ['a', 'z']), (conditions.not_exists, ['2']),],
+                "foreach": [('a', {'omit': ['z']}), ('z', {'omit': ['a']}),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
-                        "objtypes": ["bf:Nbn"],
-                        "repeat_on_subfields": ['z'],
+                        "objtypes": ["bf:Identifier"],
                         "props": {
-                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
-                            "bf:source": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/nationalbibschemes/'), ] }),
-                            "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
-                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
-                        }
-                    }
-                ),
-            },
-            {
-                "field": "015",
-                "property": "bf:identifiedBy",
-                "conditions": [(conditions.exists, ['a']), (conditions.not_exists, ['2']),],
-                "pattern": (
-                    patterns.object_complex, 
-                    { 
-                        "objtypes": ["bf:Nbn"],
-                        "repeat_on_subfields": ['a'],
-                        "props": {
+                            "rdf:type": (patterns.uri, { "data": (filters.identifier_field_map, ['tag']) }),
                             "rdf:value": (patterns.literal, { "data": (None, ['a']) }),
                             "bf:source": (patterns.uri, { "data": [(None, ['value=%ORGRESPONSIBLE%'])] }),
                             "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
+                            "bf:status": (patterns.uri, { "conditions": (conditions.exists, ['z']), "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
                         }
                     }
                 ),
             },
-            {
-                "field": "015",
-                "property": "bf:identifiedBy",
-                "conditions": [(conditions.exists, ['z']), (conditions.not_exists, ['2']),],
-                "pattern": (
-                    patterns.object_complex, 
-                    { 
-                        "objtypes": ["bf:Nbn"],
-                        "repeat_on_subfields": ['z'],
-                        "props": {
-                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
-                            "bf:source": (patterns.uri, { "data": [(None, ['value=%ORGRESPONSIBLE%'])] }),
-                            "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
-                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
-                        }
-                    }
-                ),
-            },
+            # This 016 is for when the org code is identified in $2
             {
                 "field": "016",
                 "property": "bf:identifiedBy",
                 "conditions": [(conditions.exists, ['a']), (conditions.ind1_is, ['7']), (conditions.exists, ['2']),],
+                "foreach": [('a', {'omit': ['z']}), ('z', {'omit': ['a']}),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
-                        "objtypes": ["bf:Local"],
+                        "objtypes": ["bf:Identifier"],
                         "props": {
+                            "rdf:type": (patterns.uri, { "data": (filters.identifier_field_map, ['tag']) }),
                             "rdf:value": (patterns.literal, { "data": (None, ['a']) }),
                             "bf:source": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/organizations/'), ] }),
+                            "bf:status": (patterns.uri, { "conditions": (conditions.exists, ['z']), "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
                         }
                     }
                 ),
             },
-            {
-                "field": "016",
-                "property": "bf:identifiedBy",
-                "conditions": [(conditions.exists, ['z']), (conditions.ind1_is, ['7']), (conditions.exists, ['2']),],
-                "pattern": (
-                    patterns.object_complex, 
-                    { 
-                        "objtypes": ["bf:Local"],
-                        "repeat_on_subfields": ['z'],
-                        "props": {
-                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
-                            "bf:source": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/organizations/'), ] }),
-                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
-                        }
-                    }
-                ),
-            },
+            # This 016 is for when ind1 is blank, which is for the LAC.
             {
                 "field": "016",
                 "property": "bf:identifiedBy",
                 "conditions": [(conditions.exists, ['a']), (conditions.ind1_is, [' '])],
+                "foreach": [('a', {'omit': ['z']}), ('z', {'omit': ['a']}),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
-                        "objtypes": ["bf:Local"],
+                        "objtypes": ["bf:Identifier"],
                         "props": {
+                            "rdf:type": (patterns.uri, { "data": (filters.identifier_field_map, ['tag']) }),
                             "rdf:value": (patterns.literal, { "data": (None, ['a']) }),
                             "bf:source": (patterns.uri, { "data": [(None, ['value=https://www.bac-lac.gc.ca/'])] }),
-                        }
-                    }
-                ),
-            },
-            {
-                "field": "016",
-                "property": "bf:identifiedBy",
-                "conditions": [(conditions.exists, ['z']), (conditions.ind1_is, [' '])],
-                "pattern": (
-                    patterns.object_complex, 
-                    { 
-                        "objtypes": ["bf:Local"],
-                        "repeat_on_subfields": ['z'],
-                        "props": {
-                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
-                            "bf:source": (patterns.uri, { "data": [(None, ['value=https://www.bac-lac.gc.ca/'])] }),
-                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                            "bf:status": (patterns.uri, { "conditions": (conditions.exists, ['z']), "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
                         }
                     }
                 ),
@@ -241,12 +183,13 @@ profile = [
                 "field": "017",
                 "property": "bf:identifiedBy",
                 "conditions": [(conditions.exists, ['a'])],
+                "foreach": [('a', {'omit': ['z']}), ('z', {'omit': ['a']}),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
-                        "objtypes": ["bf:CopyrightNumber"],
-                        "repeat_on_subfields": ['a'],
+                        "objtypes": ["bf:Identifier"],
                         "props": {
+                            "rdf:type": (patterns.uri, { "data": (filters.identifier_field_map, ['tag']) }),
                             "rdf:value": (patterns.literal, { "data": (None, ['a']) }),
                             "rdfs:comment": (patterns.literal, { "data": [(None, ['i'])] }),
                             "bf:date": (patterns.literal, { "data": [(None, ['d'])] }),
@@ -260,34 +203,27 @@ profile = [
                                     }
                                 }
                             ),
+                            "bf:status": (patterns.uri, { "conditions": (conditions.exists, ['z']), "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
                         }
                     }
                 ),
             },
             {
-                "field": "017",
+                "field": ["024"],
                 "property": "bf:identifiedBy",
-                "conditions": [(conditions.exists, ['z'])],
+                "conditions": (conditions.exists, ['a', 'z']),
+                "foreach": [('a', {'omit': ['z']}), ('z', {'omit': ['a']}),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
-                        "objtypes": ["bf:CopyrightNumber"],
-                        "repeat_on_subfields": ['z'],
+                        "objtypes": ["bf:Identifier"],
                         "props": {
-                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
-                            "rdfs:comment": (patterns.literal, { "data": [(None, ['i'])] }),
-                            "bf:date": (patterns.literal, { "data": [(None, ['d'])] }),
-                            "bf:source": (
-                                patterns.object_complex, 
-                                { 
-                                    "objtypes": ["bf:Agent"],
-                                    "uri": (filters.uri_or_bnode, {"data": (None, ['1'])}),
-                                    "props": {
-                                        "rdfs:label": (patterns.literal, { "data": (filters.join, ['b']) }),
-                                    }
-                                }
-                            ),
-                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                            "rdf:type": (patterns.uri, { "data": (filters.identifier_024_map, ['ind1']) }),
+                            "rdf:type_0": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/identifiers/'), ] }),
+                            "rdf:value": (patterns.literal, { "data": [(None, ['a', 'z'])] }),
+                            "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
+                            "rdfs:comment": (patterns.literal, { "data": [(None, ['d'])] }),
+                            "bf:status": (patterns.uri, { "conditions": (conditions.exists, ['z']), "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
                         }
                     }
                 ),
@@ -355,33 +291,17 @@ profile = [
                 "field": "015",
                 "property": "bf:identifiedBy",
                 "conditions": [(conditions.exists, ['a']), (conditions.exists, ['2']),],
+                "foreach": [('a', {'omit': ['z']}), ('z', {'omit': ['a']}),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
-                        "objtypes": ["bf:Nbn"],
-                        "repeat_on_subfields": ['a'],
+                        "objtypes": ["bf:Identifier"],
                         "props": {
+                            "rdf:type": (patterns.uri, { "data": (filters.identifier_field_map, ['tag']) }),
                             "rdf:value": (patterns.literal, { "data": (None, ['a']) }),
                             "bf:source": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/nationalbibschemes/'), ] }),
                             "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
-                        }
-                    }
-                ),
-            },
-            {
-                "field": "015",
-                "property": "bf:identifiedBy",
-                "conditions": [(conditions.exists, ['z']), (conditions.exists, ['2']),],
-                "pattern": (
-                    patterns.object_complex, 
-                    { 
-                        "objtypes": ["bf:Nbn"],
-                        "repeat_on_subfields": ['z'],
-                        "props": {
-                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
-                            "bf:source": (patterns.uri, { "data": [(filters.lower, ['2']), (filters.appenduri, 'http://id.loc.gov/vocabulary/nationalbibschemes/'), ] }),
-                            "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
-                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                            "bf:status": (patterns.uri, { "conditions": (conditions.exists, ['z']), "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
                         }
                     }
                 ),
@@ -390,33 +310,108 @@ profile = [
                 "field": "015",
                 "property": "bf:identifiedBy",
                 "conditions": [(conditions.exists, ['a']), (conditions.not_exists, ['2']),],
+                "foreach": [('a', {'omit': ['z']}), ('z', {'omit': ['a']}),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
-                        "objtypes": ["bf:Nbn"],
-                        "repeat_on_subfields": ['a'],
+                        "objtypes": ["bf:Identifier"],
                         "props": {
+                            "rdf:type": (patterns.uri, { "data": (filters.identifier_field_map, ['tag']) }),
                             "rdf:value": (patterns.literal, { "data": (None, ['a']) }),
                             "bf:source": (patterns.uri, { "data": [(None, ['value=%ORGRESPONSIBLE%'])] }),
                             "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
+                            "bf:status": (patterns.uri, { "conditions": (conditions.exists, ['z']), "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
                         }
                     }
                 ),
             },
             {
-                "field": "015",
+                # ISSNs active and cancelled.  Note two ways to do a URI.
+                "field": ["022"],
                 "property": "bf:identifiedBy",
-                "conditions": [(conditions.exists, ['z']), (conditions.not_exists, ['2']),],
+                "conditions": (conditions.exists, ['a', 'z']),
+                "foreach": [('a', {'omit': ['z']}), ('z', {'omit': ['a']}),],
                 "pattern": (
                     patterns.object_complex, 
                     { 
-                        "objtypes": ["bf:Nbn"],
-                        "repeat_on_subfields": ['z'],
+                        "objtypes": ["bf:Identifier"],
+                        "uri": (None, ['0']),
                         "props": {
-                            "rdf:value": (patterns.literal, { "data": (None, ['z']) }),
-                            "bf:source": (patterns.uri, { "data": [(None, ['value=%ORGRESPONSIBLE%'])] }),
-                            "bf:qualifier": (patterns.literal, { "data": [(None, ['q'])] }),
-                            "bf:status": (patterns.uri, { "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                            # "@id": (filters.uri_or_bnode, {"data": (None, ['0'])}),
+                            "rdf:type": (patterns.uri, { "data": (filters.identifier_field_map, ['tag']) }),
+                            "rdf:value": (patterns.literal, { "data": [(filters.no_parenthetical, ['a', 'z']), (filters.no_ending_punctuation, )] }),
+                            "bf:status": (patterns.uri, { "conditions": (conditions.exists, ['z']), "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                            "bf:source": (
+                                patterns.object_complex, 
+                                { 
+                                    "conditions": (conditions.exists, ['2']), 
+                                    "objtypes": ["bf:Agent"],
+                                    "uri": (filters.uri_or_bnode, {"data": (None, )}),
+                                    "props": {
+                                        "rdfs:label": (patterns.literal, { "data": (filters.no_parenthetical, ['2']) }),
+                                    }
+                                }
+                            ),
+                        }
+                    }
+                ),
+            },
+            {
+                # ISSNs incorrect.  Note two ways to do a URI.
+                "field": ["022"],
+                "property": "bf:identifiedBy",
+                "conditions": (conditions.exists, ['y']),
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Identifier"],
+                        "uri": (None, ['0']),
+                        "props": {
+                            # "@id": (filters.uri_or_bnode, {"data": (None, ['0'])}),
+                            "rdf:type": (patterns.uri, { "data": (filters.identifier_field_map, ['tag']) }),
+                            "rdf:value": (patterns.literal, { "data": [(filters.no_parenthetical, ['y']), (filters.no_ending_punctuation, )] }),
+                            "bf:status": (patterns.uri, { "conditions": (conditions.exists, ['y']), "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/incorrect'])] }),
+                            "bf:source": (
+                                patterns.object_complex, 
+                                { 
+                                    "conditions": (conditions.exists, ['2']), 
+                                    "objtypes": ["bf:Agent"],
+                                    "uri": (filters.uri_or_bnode, {"data": (None, )}),
+                                    "props": {
+                                        "rdfs:label": (patterns.literal, { "data": (filters.no_parenthetical, ['2']) }),
+                                    }
+                                }
+                            ),
+                        }
+                    }
+                ),
+            },
+            {
+                # ISSN-Ls active and cancelled.  Note two ways to do a URI.
+                "field": ["022"],
+                "property": "bf:identifiedBy",
+                "conditions": (conditions.exists, ['l', 'm']),
+                "foreach": [('l', {'omit': ['m']}), ('m', {'omit': ['l']}),],
+                "pattern": (
+                    patterns.object_complex, 
+                    { 
+                        "objtypes": ["bf:Identifier", "identifiers:issn-l"],
+                        "uri": (None, ['0']),
+                        "props": {
+                            # "@id": (filters.uri_or_bnode, {"data": (None, ['0'])}),
+                            "rdf:value": (patterns.literal, { "data": [(filters.no_parenthetical, ['l', 'm']), (filters.no_ending_punctuation, )] }),
+                            "bf:status": (patterns.uri, { "conditions": (conditions.exists, ['m']), "data": [(None, ['value=http://id.loc.gov/vocabulary/mstatus/cancinv'])] }),
+                            "bf:source": (
+                                patterns.object_complex, 
+                                { 
+                                    "conditions": (conditions.exists, ['2']), 
+                                    "objtypes": ["bf:Agent"],
+                                    "uri": (filters.uri_or_bnode, {"data": (None, )}),
+                                    "props": {
+                                        "rdfs:label": (patterns.literal, { "data": (filters.no_parenthetical, ['2']) }),
+                                    }
+                                }
+                            ),
                         }
                     }
                 ),

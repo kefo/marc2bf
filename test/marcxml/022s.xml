@@ -1,0 +1,32 @@
+<record xmlns="http://www.loc.gov/MARC21/slim">
+  <leader>01035cam a2200325 a 4500</leader>
+  <controlfield tag="001">5226</controlfield>
+  <!--
+    022 	0#$a1560-1560$l1234-1231$m1560-1560 
+    022 	0#$a0145-0808$z0361-7106 
+    022 	0#$a1534-9322$0http://issn.org/resource/ISSN/1534-9322#ISSN 
+    022 	0#$a1534-9322$2_5
+    022 	0#$a0046-225X$y0046-2254 
+  -->
+  <datafield tag="022" ind1=" " ind2=" ">
+    <subfield code="a">1560-1560</subfield>
+    <subfield code="l">1234-1231</subfield>
+    <subfield code="m">1560-1560</subfield>
+  </datafield>
+  <datafield tag="022" ind1=" " ind2=" ">
+    <subfield code="a">0145-0808</subfield>
+    <subfield code="z">0361-7106</subfield>
+  </datafield>
+  <datafield tag="022" ind1=" " ind2=" ">
+    <subfield code="a">1534-9322</subfield>
+    <subfield code="0">http://issn.org/resource/ISSN/1534-9322#ISSN</subfield>
+  </datafield>
+  <datafield tag="022" ind1=" " ind2=" ">
+    <subfield code="a">0376-4583</subfield>
+    <subfield code="2">_5</subfield>
+  </datafield>
+  <datafield tag="022" ind1=" " ind2=" ">
+    <subfield code="a">0046-225X</subfield>
+    <subfield code="y">0046-2254</subfield>
+  </datafield>
+</record>

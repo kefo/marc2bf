@@ -1,0 +1,27 @@
+<record xmlns="http://www.loc.gov/MARC21/slim">
+  <leader>01035cam a2200325 a 4500</leader>
+  <controlfield tag="001">5226</controlfield>
+  <datafield tag="020" ind1=" " ind2=" ">
+    <subfield code="a">0914378260</subfield>
+    <subfield code="q">pbk</subfield>
+    <subfield code="q">v. 1</subfield>
+    <subfield code="c">$5.00</subfield>
+  </datafield>
+  <datafield tag="020" ind1=" " ind2=" ">
+    <subfield code="a">0877790019</subfield>
+    <subfield code="q">black leather</subfield>
+    <subfield code="z">0877780116 :</subfield>
+    <subfield code="c">$14.00</subfield>
+  </datafield>
+  <datafield tag="020" ind1=" " ind2=" ">
+    <subfield code="z">0567890123</subfield>
+    <subfield code="q">reel 2</subfield>
+  </datafield>
+  <datafield tag="020" ind1=" " ind2=" ">
+    <subfield code="a">0394856309 (little hardback)</subfield>
+  </datafield>
+  <datafield tag="020" ind1=" " ind2=" ">
+    <subfield code="a">0394856309 (little hardback)</subfield>
+    <subfield code="q">tiny</subfield>
+  </datafield>
+</record>

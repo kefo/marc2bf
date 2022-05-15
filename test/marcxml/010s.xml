@@ -7,6 +7,7 @@
   <datafield tag="010" ind1=" " ind2=" ">
     <subfield code="a">1</subfield>
     <subfield code="a">2 </subfield>
+    <subfield code="b">a b </subfield>
   </datafield>
   <datafield tag="010" ind1=" " ind2=" ">
     <subfield code="z">3</subfield>
@@ -16,6 +17,10 @@
     <subfield code="a">5</subfield>
     <subfield code="z">6</subfield>
     <subfield code="z">7</subfield>
+  </datafield>
+  <datafield tag="025" ind1=" " ind2=" ">
+    <subfield code="a">Ae-F-355</subfield>
+    <subfield code="a">Ae-F-562</subfield>
   </datafield>
   <!--
   <datafield tag="010" ind1=" " ind2=" ">
